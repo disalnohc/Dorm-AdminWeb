@@ -5,7 +5,7 @@ import Add from "../../components/add/Add";
 import { firestore } from "../../firebase";
 
 const columns = [
-  { field: "id", headerName: "ลำดับ", width: 100 }, // เปลี่ยนชื่อเป็น "ลำดับ"
+  { field: "id", headerName: "ID", width: 100 }, 
   {
     field: "roomNumber",
     type: "string",
@@ -22,7 +22,7 @@ const columns = [
 
 const Room = () => {
   const [open, setOpen] = useState(false);
-  const [roomData, setRoomData] = useState([]); // เก็บข้อมูลจาก Firestore
+  const [roomData, setRoomData] = useState([]); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +33,7 @@ const Room = () => {
           .collection("RoomData");
         const querySnapshot = await collRef.get();
         const data = querySnapshot.docs.map((doc, index) => ({
-          id: index + 1, // เปลี่ยน id เป็นลำดับข้อมูล
+          id: index + 1, 
           roomNumber: doc.id,
           status: doc.data().status,
         }));
@@ -44,7 +44,7 @@ const Room = () => {
     };
 
     fetchData();
-  }, []); // เรียก fetchData() เมื่อคอมโพเนนต์ถูกโหลดเสร็จสิ้นเพียงครั้งเดียว
+  }, []); 
 
   return (
     <div className="products">
