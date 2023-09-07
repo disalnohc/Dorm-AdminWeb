@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./room.css";
-import DataTableAC from "../../components/dataTableAC/DataTableAC";
-import Add from "../../components/add/Add";
+import DataTableAC from "../../components/dataTableAC/DataTableAC"; //inside Table
 import { firestore } from "../../firebase";
 
 const columns = [
@@ -21,39 +20,38 @@ const columns = [
 ];
 
 const Room = () => {
-  const [open, setOpen] = useState(false);
+  //const [open, setOpen] = useState(false);
   const [roomData, setRoomData] = useState([]); 
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const collRef = firestore
-          .collection("Apartment")
-          .doc("Room")
-          .collection("RoomData");
-        const querySnapshot = await collRef.get();
-        const data = querySnapshot.docs.map((doc, index) => ({
-          id: index + 1, 
-          roomNumber: doc.id,
-          status: doc.data().status,
-        }));
-        setRoomData(data);
-      } catch (error) {
-        console.log("เกิดข้อผิดพลาดในการดึงข้อมูล : ", error);
-      }
-    };
-
-    fetchData();
+    fetchDataRoom();
   }, []); 
+
+  const fetchDataRoom = async () => {
+    try {
+      const collRef = firestore
+        .collection("rooms")
+      const querySnapshot = await collRef.get();
+      const data = querySnapshot.docs.map((doc, index) => ({
+        id: index + 1, 
+        roomNumber: doc.id,
+        status: doc.data().status,
+      }));
+      setRoomData(data);
+    } catch (error) {
+      console.log("เกิดข้อผิดพลาดในการดึงข้อมูล : ", error);
+    }
+  };
 
   return (
     <div className="products">
       <div className="info">
         <h1>ผังห้องพัก</h1>
       </div>
-      <DataTableAC slug="products" columns={columns} rows={roomData} />
-      {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
+      <DataTableAC slug="room" columns={columns} rows={roomData} fetchDataRoom={fetchDataRoom} />
     </div>
+
+    
   );
 };
 

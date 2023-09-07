@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./electricity.css";
 import DataTableAC from "../../components/dataTableAC/DataTableAC";
 import Add from "../../components/add/Add";
-import { electricity  } from "../../data.ts";
+import { firestore } from "../../firebase";
 
 const columns = [
   { field: "id", headerName: "ID", width: 100 },
@@ -39,17 +39,55 @@ const columns = [
 ];
 
 const Detail = () => {
-    const [open, setOpen] = useState(false);
-  
-    return (
-      <div className="products">
-        <div className="info">
-          <h1>ค่าไฟฟ้า  เดือน สิงหาคม 2566</h1>
-        </div>
-        <DataTableAC slug="products" columns={columns} rows={electricity} />
-        {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
+  const [open, setOpen] = useState(false);
+  const [electricData, setElectricData] = useState([]);
+  const [displayDateFormatted , setDisplayDateFormatted] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const collRef = firestore.collection('rooms')
+        const querySnapshot = await collRef.get();
+        const data = querySnapshot.docs.map((doc, index) => ({
+          id: index + 1,
+          roomNumber: doc.id,
+          status: doc.data().status,
+          previousMeter: doc.data().electric,
+          currentMeter: doc.data().electricCurrent,
+          consumptionDifference: parseInt(doc.data().electricCurrent) - parseInt(doc.data().electric),
+        }));
+        setElectricData(data);
+      } catch (error) {
+        console.log('error fetch data : ', error)
+      }
+    }
+    displayDate();
+    fetchData();
+  }, []);
+
+  const displayDate = () => {
+    const date = new Date();
+    const year = date.getFullYear() + 543; // เพิ่ม 543 เพื่อแปลงเป็นปีพุทธศักราช
+    const monthNames = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน',
+      'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม',
+      'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
+    const month = monthNames[date.getMonth()];
+
+    const formattedDate = `ค่าไฟฟ้า เดือน ${month} ปี ${year}`;
+    setDisplayDateFormatted(formattedDate);
+  }
+
+  return (
+    <div className="products">
+      <div className="info">
+        <h1>{displayDateFormatted}</h1>
       </div>
-    );
-  };
-  
-  export default Detail;
+      <DataTableAC slug="products" columns={columns} rows={electricData} />
+      {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
+    </div>
+  );
+};
+
+export default Detail;
