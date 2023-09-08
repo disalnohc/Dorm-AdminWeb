@@ -12,7 +12,6 @@ import AddIcon from "@mui/icons-material/Add";
 import "./dataTable.css";
 import Button from '@mui/material/Button';
 import {
-  GridToolbarContainer,
   GridToolbarExport,
   GridToolbarQuickFilter
 } from "@mui/x-data-grid";
@@ -24,15 +23,26 @@ import Form from 'react-bootstrap/Form';
 import { firestore } from "../../firebase";
 
 const DataTableAC = (props) => {
-  
-  const { slug , fetchDataRoom } = props;
+
+  const { slug, fetchDataRoom } = props;
   const isRoomPage = slug === "room";
   const [showModal, setShowModal] = useState(false);
+  const [showSmallModal, setShowSmallModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [roomId, setRoomId] = useState('');
 
-  const handleDelete = (id) => {
+  const handleDelete = async () => {
+    try {
+      await firestore.collection('rooms').doc(roomId).delete();
+        console.log(`Room ${roomId} deleted successfully.`);
+        setShowDeleteModal(false);
+        fetchDataRoom();
+      } catch (error) {
+      console.log('error delete room : ',error);
+    }
   };
 
-  const handleAddRoom = () => {
+  const handleAddRoom = async () => {
     const NewRoomData = {
       owner: "",
       electric: "0",
@@ -44,12 +54,16 @@ const DataTableAC = (props) => {
     try {
       const RoomID = document.getElementById("title").value;
 
-      const CollRef = firestore.collection('rooms').doc(RoomID);
-      if (CollRef.set(NewRoomData)) {
+      await firestore.collection('rooms').doc(RoomID).set(NewRoomData);
         console.log('add new room success');
         setShowModal(false);
-        fetchDataRoom();
-      }
+        fetchDataRoom()
+          setTimeout(() => {
+            setShowSmallModal(true);
+          }, 1000);
+          setTimeout(() => {
+            setShowSmallModal(false);
+          }, 2000);
     } catch (error) {
       console.log("error add new room : ", error);
     }
@@ -57,6 +71,7 @@ const DataTableAC = (props) => {
 
   const handleClose = () => {
     setShowModal(false);
+    setShowDeleteModal(false);
   };
 
   const handleShow = () => {
@@ -108,6 +123,40 @@ const DataTableAC = (props) => {
           </Modal.Footer>
         </Modal>
 
+        <Modal show={showSmallModal} onHide={handleClose} >
+          <Modal.Header >
+            <Modal.Title>Add Success</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label><CheckIcon />Add Room Number : {document.querySelector("title").value} Success</Form.Label>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+        </Modal>
+
+        <Modal show={showDeleteModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
+          centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Delete Room {roomId}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Are you sure to delete room : {roomId} ?</Form.Label>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button color="error" variant="outlined" onClick={handleDelete}>
+              Delete Room
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
@@ -126,7 +175,10 @@ const DataTableAC = (props) => {
               <PageviewIcon />
             </IconButton>
           </Link>
-          <div className="delete" onClick={() => handleDelete(params.row.id)}>
+          <div className="delete" onClick={() => {
+            setRoomId(params.row.roomNumber);
+            setShowDeleteModal(true);
+          }}>
             <IconButton>
               <DeleteIcon />
             </IconButton>
@@ -144,7 +196,7 @@ const DataTableAC = (props) => {
         columns={[...props.columns, actionColumn]}
         initialState={{
           pagination: {
-            pageSize: 10,
+            paginationModel: { page: 0, pageSize: 10 },
           },
         }}
         slots={{ toolbar: isRoomPage ? CustomToolbar : GridToolbar }}
@@ -154,8 +206,6 @@ const DataTableAC = (props) => {
             quickFilterProps: { debounceMs: 500 },
           },
         }}
-        pageSizeOptions={[5]}
-        checkboxSelection
         disableRowSelectionOnClick
         disableColumnFilter
         disableDensitySelector
