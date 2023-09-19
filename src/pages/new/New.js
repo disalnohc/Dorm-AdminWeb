@@ -11,7 +11,7 @@ const fetchNewsFromFirestore = async () => {
         const newsCollection = await firestore.collection('news').get();
         const updatedNewsData = [];
         newsCollection.forEach((doc) => {
-            const news = doc.data();
+            const news = { id: doc.id, ...doc.data() }; // Include the document ID
             updatedNewsData.push(news);
         });
         return updatedNewsData;
@@ -30,12 +30,30 @@ const addNewsToFirestore = async (newsData) => {
     }
 };
 
-const ITEMS_PER_PAGE = 2;
+const updateNewsInFirestore = async (id, updatedData) => {
+    try {
+        await firestore.collection('news').doc(id).update(updatedData);
+        console.log(`News with ID ${id} updated in Firestore`);
+    } catch (error) {
+        console.error('Error updating news in Firestore: ', error);
+    }
+};
 
+const deleteNewsFromFirestore = async (id) => {
+    try {
+        await firestore.collection('news').doc(id).delete();
+        console.log(`News with ID ${id} deleted from Firestore`);
+    } catch (error) {
+        console.error('Error deleting news from Firestore: ', error);
+    }
+};
+
+const ITEMS_PER_PAGE = 2;
 
 function News() {
     const [showModal, setShowModal] = useState(false);
-    const [newNews, setNewNews] = useState(false);
+    const [newNews, setNewNews] = useState({});
+    const [editing, setEditing] = useState(false); // Indicates whether we are editing or adding news
     const [firebaseNews, setFirebaseNews] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const totalItems = firebaseNews.length;
@@ -65,26 +83,44 @@ function News() {
 
     const handleClose = () => {
         setShowModal(false);
+        setNewNews({});
+        setEditing(false);
     };
 
     const handleShow = () => {
         setShowModal(true);
+        setEditing(false); // Reset to adding mode
     };
 
     const handleAddNews = async () => {
         try {
-            const newsData = {
-                title: newNews.title,
-                description: newNews.description,
-                image: newNews.image,
-                date: newNews.date,
-            };
-            await addNewsToFirestore(newsData);
+            await addNewsToFirestore(newNews);
             const updatedNews = await fetchNewsFromFirestore();
             setFirebaseNews(updatedNews);
             handleClose();
         } catch (error) {
             console.error('Error adding news to Firestore: ', error);
+        }
+    };
+
+    const handleEditNews = async (id, updatedData) => {
+        try {
+            await updateNewsInFirestore(id, updatedData);
+            const updatedNews = await fetchNewsFromFirestore();
+            setFirebaseNews(updatedNews);
+            handleClose();
+        } catch (error) {
+            console.error('Error updating news: ', error);
+        }
+    };
+
+    const handleDeleteNews = async (id) => {
+        try {
+            await deleteNewsFromFirestore(id);
+            const updatedNews = await fetchNewsFromFirestore();
+            setFirebaseNews(updatedNews);
+        } catch (error) {
+            console.error('Error deleting news from Firestore: ', error);
         }
     };
 
@@ -112,6 +148,12 @@ function News() {
         });
     };
 
+    const handleEditClick = (news) => {
+        setNewNews(news);
+        setEditing(true);
+        setShowModal(true);
+    };
+
     return (
         <div className="app">
             <div className="main-content">
@@ -131,6 +173,20 @@ function News() {
                                     <h5 className="card-title">{news.title}</h5>
                                     <p className="card-text">{news.description}</p>
                                     <p className="card-text">{news.date}</p>
+                                    <div className="btn-group">
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleDeleteNews(news.id)}
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            className="btn btn-warning"
+                                            onClick={() => handleEditClick(news)}
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +195,7 @@ function News() {
                 <div className="pagination">
                     <button
                         className="btn btn-primary"
-                        onClick={() => setCurrentPage(currentPage - 1)}
+                        onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                     >
                         Previous
@@ -155,7 +211,7 @@ function News() {
                     ))}
                     <button
                         className="btn btn-primary"
-                        onClick={() => setCurrentPage(currentPage + 1)}
+                        onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                     >
                         Next
@@ -163,13 +219,13 @@ function News() {
                 </div>
 
                 <div className="add-button">
-                    <button className="btn btn-primary" onClick={handleShow}>Add</button>
+                    <button className="btn btn-primary" onClick={handleShow}>Add News</button>
                 </div>
             </div>
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add News</Modal.Title>
+                    <Modal.Title>{editing ? 'Edit News' : 'Add News'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -178,7 +234,7 @@ function News() {
                             <Form.Control
                                 type="text"
                                 name="title"
-                                value={newNews.title}
+                                value={newNews.title || ''}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -188,7 +244,7 @@ function News() {
                                 as="textarea"
                                 rows={3}
                                 name="description"
-                                value={newNews.description}
+                                value={newNews.description || ''}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -196,9 +252,12 @@ function News() {
                             <Form.Label>Image</Form.Label>
                             <Form.Control
                                 type="file"
-                                accept="image/*" 
+                                accept="image/*"
                                 onChange={handleFileChange}
                             />
+                            {newNews.image && (
+                                <img src={newNews.image} alt="Selected" style={{ maxWidth: '100px' }} />
+                            )}
                         </Form.Group>
 
                         <Form.Group controlId="date">
@@ -206,7 +265,7 @@ function News() {
                             <Form.Control
                                 type="date"
                                 name="date"
-                                value={newNews.date}
+                                value={newNews.date || ''}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -216,8 +275,8 @@ function News() {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleAddNews}>
-                        Add News
+                    <Button variant="primary" onClick={editing ? () => handleEditNews(newNews.id, newNews) : handleAddNews}>
+                        {editing ? 'Save Changes' : 'Add News'}
                     </Button>
                 </Modal.Footer>
             </Modal>
