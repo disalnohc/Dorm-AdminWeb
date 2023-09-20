@@ -3,7 +3,6 @@ import {
   DataGrid,
   GridToolbar,
 } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import PageviewIcon from '@mui/icons-material/Pageview';
 import CheckIcon from '@mui/icons-material/Check';
@@ -31,14 +30,28 @@ const DataTableAC = (props) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roomId, setRoomId] = useState('');
 
+  const [showOccupied , setShowOccupied] = useState(false);
+  const [showAssign , setShowAssign] = useState(false);
+
+  const [smallModalTitle , setSmallModalTitle] = useState(null);
+  const [smallModalDetail , setSmallModalDetail] = useState(null);
+
   const handleDelete = async () => {
     try {
       await firestore.collection('rooms').doc(roomId).delete();
-        console.log(`Room ${roomId} deleted successfully.`);
-        setShowDeleteModal(false);
-        fetchDataRoom();
-      } catch (error) {
-      console.log('error delete room : ',error);
+      console.log(`Room ${roomId} deleted successfully.`);
+      setShowDeleteModal(false);
+      fetchDataRoom();
+        setTimeout(() => {
+        setSmallModalTitle('Delete Success');
+        setSmallModalDetail(`Delete Room : ${roomId} Success`);
+        setShowSmallModal(true);
+      }, 1000);
+      setTimeout(() => {
+        setShowSmallModal(false);
+      }, 2000);
+    } catch (error) {
+      console.log('error delete room : ', error);
     }
   };
 
@@ -49,21 +62,26 @@ const DataTableAC = (props) => {
       electricCurrent: "0",
       waterCurrent: "0",
       water: "0",
+      img: "",
+      datein: "",
+      dateout: "",
       status: document.getElementById("Status").value,
     }
     try {
       const RoomID = document.getElementById("title").value;
 
       await firestore.collection('rooms').doc(RoomID).set(NewRoomData);
-        console.log('add new room success');
-        setShowModal(false);
-        fetchDataRoom()
-          setTimeout(() => {
-            setShowSmallModal(true);
-          }, 1000);
-          setTimeout(() => {
-            setShowSmallModal(false);
-          }, 2000);
+      console.log('add new room success');
+      setShowModal(false);
+      fetchDataRoom();
+      setTimeout(() => {
+        setSmallModalTitle('Add Success');
+        setSmallModalDetail(`Add Room Number : ${roomId} Success`);
+        setShowSmallModal(true);
+      }, 1000);
+      setTimeout(() => {
+        setShowSmallModal(false);
+      }, 2000);
     } catch (error) {
       console.log("error add new room : ", error);
     }
@@ -72,10 +90,79 @@ const DataTableAC = (props) => {
   const handleClose = () => {
     setShowModal(false);
     setShowDeleteModal(false);
+    setShowAssign(false);
+    setShowOccupied(false);
   };
 
   const handleShow = () => {
     setShowModal(true);
+  };
+
+  const handleEdit = (status) => {
+    //alert(roomNumber + " " + status)
+    switch(status) {
+      case 'Occupied' :
+        setShowOccupied(true);
+        //alert('Occupied');
+        break;
+      case 'Assign' :
+        setShowAssign(true);
+        //alert('Assign');
+        break;
+      default : console.log('error room status');      
+    }
+  };
+
+  const handleOccupied = async () => {
+    try {
+      await firestore.collection('rooms').doc(roomId).update({ 
+        status : 'Occupied'
+       }).then(() =>{
+        console.log('Update Success');
+        handleClose();
+        fetchDataRoom();
+        setTimeout(() => {
+        setSmallModalTitle('Update Success');
+        setSmallModalDetail(`Update Room ${roomId} : to Occupied Success`);
+        setShowSmallModal(true);
+      }, 1000);
+      setTimeout(() => {
+        setShowSmallModal(false);
+      }, 2000);
+      }).catch((error) => {
+        console.error('Error Update : ',error);
+      })
+    } catch (error) {
+      console.log('error update to Occupied : ',error)
+    }
+  };
+
+  const handleVacant = async () => {
+    try {
+      await firestore.collection('rooms').doc(roomId).update({ 
+        status : 'Vacant',
+        datein : '',
+        dateout : '',
+        img : '',
+        owner : '',
+       }).then(() =>{
+        console.log('Update Success');
+        handleClose();
+        fetchDataRoom();
+        setTimeout(() => {
+        setSmallModalTitle('Update Success');
+        setSmallModalDetail(`Update Room ${roomId} : to Vancant Success`);
+        setShowSmallModal(true);
+      }, 1000);
+      setTimeout(() => {
+        setShowSmallModal(false);
+      }, 2000);
+      }).catch((error) => {
+        console.error('Error Update : ',error);
+      })
+    } catch (error) {
+      console.log('error update to Vacant : ',error)
+    }
   };
 
   function CustomToolbar() {
@@ -125,12 +212,12 @@ const DataTableAC = (props) => {
 
         <Modal show={showSmallModal} onHide={handleClose} >
           <Modal.Header >
-            <Modal.Title>Add Success</Modal.Title>
+            <Modal.Title>{smallModalTitle}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               <Form.Group>
-                <Form.Label><CheckIcon />Add Room Number : {document.querySelector("title").value} Success</Form.Label>
+                <Form.Label><CheckIcon />{smallModalDetail}</Form.Label>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -157,11 +244,65 @@ const DataTableAC = (props) => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Modal show={showOccupied} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
+          centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Room {roomId} Information</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+            <Form.Group controlId="profile owner">
+                <Form.Label>Profile Name</Form.Label><br />
+                <Form.Label>Profile Phone Number</Form.Label><br />
+                <Form.Label>Profile Email</Form.Label><br />
+                <Form.Label>Profile DateIn</Form.Label><br />
+                <Form.Label>Profile DateOut</Form.Label>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="error" variant="outlined" onClick={handleVacant}>
+              Change to Vacant
+            </Button>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={showAssign} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
+          centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Room {roomId} Information</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="profile owner">
+                <Form.Label>Profile Name</Form.Label><br />
+                <Form.Label>Profile Phone Number</Form.Label><br />
+                <Form.Label>Profile Email</Form.Label><br />
+                <Form.Label>Profile DateIn</Form.Label><br />
+                <Form.Label>Profile DateOut</Form.Label>
+                <img src="profile_image_url_here" alt="slip_bank_images" />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="success" variant="contained" onClick={handleOccupied}>
+              Change to Occupied
+            </Button>
+            <Button color="error" variant="outlined" onClick={handleVacant} >
+              Change to Vacant
+            </Button>
+            <Button onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
-
-
 
   const actionColumn = {
     field: "action",
@@ -170,11 +311,18 @@ const DataTableAC = (props) => {
     renderCell: (params) => {
       return (
         <div className="action">
-          <Link to={`/${props.slug}/${params.row.id}`}>
-            <IconButton>
-              <PageviewIcon />
-            </IconButton>
-          </Link>
+          {props.slug === 'room' && (
+            params.row.status !== "Vacant" && (
+              <IconButton onClick={() => {
+                setRoomId(params.row.roomNumber);
+                handleEdit(params.row.status);
+              }}>
+                <PageviewIcon />
+              </IconButton>
+            )
+          )
+          }
+          
           <div className="delete" onClick={() => {
             setRoomId(params.row.roomNumber);
             setShowDeleteModal(true);
@@ -185,7 +333,9 @@ const DataTableAC = (props) => {
           </div>
         </div>
       );
+      
     },
+    
   };
 
   return (
@@ -193,7 +343,7 @@ const DataTableAC = (props) => {
       <DataGrid
         className="dataGrid"
         rows={props.rows}
-        columns={[...props.columns, actionColumn]}
+        columns={ isRoomPage ? [...props.columns , actionColumn] : props.columns}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },
