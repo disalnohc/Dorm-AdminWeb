@@ -15,7 +15,6 @@ export default function LoginForm({ onLogin }) {
     "container-2 " + (type === "signUp" ? "right-panel-active-2" : "");
   return (
     <div className="App">
-      <h2>Sign in/up Form</h2>
       <div className={containerClass} id="container-2">
         <SignUpForm />
         <SignInForm onLogin={onLogin} />
