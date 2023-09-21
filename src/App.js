@@ -17,6 +17,7 @@ import Room from './pages/admin/room/Room';
 import Security from './pages/admin/security/Security';
 import Water from './pages/admin/water/Water';
 import Electricity from './pages/admin/electricity/Electricity';
+import Profile from './pages/admin/profile/Profile'
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +51,7 @@ const App = () => {
                     <Route path="/admin/water" element={<Water />} />
                     <Route path="/admin/electricity" element={<Electricity />} />
                     <Route path="/admin/security" element={<Security />} />
+                    <Route path="/admin/profile" element={<Profile />} />
                   </Routes>
                 </Box>
               </div>

@@ -44,7 +44,7 @@ const HeaderBar = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <Link to="#" className="menu-bars">
+            <Link to="/admin/profile" className="menu-bars">
               <MenuItem onClick={handleClose}>Profile</MenuItem>
             </Link>
             <Link to="#" className="menu-bars">
