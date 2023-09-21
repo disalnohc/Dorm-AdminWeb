@@ -4,14 +4,14 @@ function SignUpForm() {
   const [state, setState] = React.useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   const handleChange = (evt) => {
     const value = evt.target.value;
     setState({
       ...state,
-      [evt.target.name]: value
+      [evt.target.name]: value,
     });
   };
 
@@ -26,7 +26,7 @@ function SignUpForm() {
     for (const key in state) {
       setState({
         ...state,
-        [key]: ""
+        [key]: "",
       });
     }
   };
@@ -36,6 +36,7 @@ function SignUpForm() {
       <form onSubmit={handleOnSubmit}>
         <h1>Create Account</h1>
         <input
+          className="input"
           type="text"
           name="name"
           value={state.name}
@@ -43,6 +44,7 @@ function SignUpForm() {
           placeholder="Name"
         />
         <input
+          className="input"
           type="email"
           name="email"
           value={state.email}
@@ -50,6 +52,7 @@ function SignUpForm() {
           placeholder="Email"
         />
         <input
+          className="input"
           type="password"
           name="password"
           value={state.password}

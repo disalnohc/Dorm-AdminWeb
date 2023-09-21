@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import './UI.css';
 const SignInForm = ({ onLogin }) => { 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,12 +17,14 @@ const SignInForm = ({ onLogin }) => {
       <form>
         <h1>Sign in</h1>
         <input
+        className='input'
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
+        className='input'
           type="password"
           placeholder="Password"
           value={password}
