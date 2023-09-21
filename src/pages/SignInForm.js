@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
-
+import { auth } from '../firebase';
+import { firestore } from '../firebase';
 const SignInForm = ({ onLogin }) => { 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('a@a.com');
+  const [password, setPassword] = useState('123456');
 
-  const handleLogin = () => {
-    if (username === 'admin' && password === '1234') {
-      onLogin();
-    } else {
-      alert('Invalid username or password');
+  const handleLogin = async () => {
+    try {
+      const userLogin = await auth.signInWithEmailAndPassword('a@a.com', '123456');
+      
+      if (userLogin) {
+        alert('ล็อกอินสำเร็จ');
+        onLogin(); 
+      } else {
+        alert('ล็อกอินไม่สำเร็จ');
+      }
+    } catch (error) {
+      console.log('เข้าสู่ระบบไม่สำเร็จ : ', error);
     }
   };
+  
 
   return (
     <div className="form-container-2 sign-in-container-2">

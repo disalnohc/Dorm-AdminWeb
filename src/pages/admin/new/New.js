@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { firestore, storageRef } from '../../../firebase';
+import { firestore, storage } from '../../../firebase';
 
 const fetchNewsFromFirestore = async () => {
   try {
@@ -55,7 +55,7 @@ const deleteNewsFromFirestore = async (id) => {
 
 const uploadImageToStorage = async (file) => {
   try {
-    const storageRef = storageRef.ref();
+    const storageRef = storage.ref();
     const fileRef = storageRef.child(`news_image/${file.name}`);
     await fileRef.put(file);
     return await fileRef.getDownloadURL();

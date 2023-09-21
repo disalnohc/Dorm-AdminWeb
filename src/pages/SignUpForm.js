@@ -1,10 +1,13 @@
 import React from "react";
+import { auth } from "../firebase";
+import { firestore } from "../firebase";
 
 function SignUpForm() {
   const [state, setState] = React.useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
+    confirmpassword: "",
   });
 
   const handleChange = (evt) => {
@@ -15,19 +18,40 @@ function SignUpForm() {
     });
   };
 
-  const handleOnSubmit = (evt) => {
+  const handleOnSubmit = async (evt) => {
     evt.preventDefault();
 
-    const { name, email, password } = state;
-    alert(
-      `You are sign up with name: ${name} email: ${email} and password: ${password}`
-    );
+    const { name, email, password , confirmpassword } = state;
 
-    for (const key in state) {
-      setState({
-        ...state,
-        [key]: ""
-      });
+    try {
+      if(password !== confirmpassword) {
+        alert('รหัสผ่านไม่ตรงกัน');
+      } else if (password.length < 6) {
+        alert('รหัสผ่านต้องมากกว่า 6 ตัวอักษร');
+      } else if (!name || !email || !password || !confirmpassword) {
+        alert(`กรุณากรอกข้อมูลให้ครบถ้วน`);
+      } else {
+        const userCreate = await auth.createUserWithEmailAndPassword(email,password);
+
+         if(userCreate){
+          await firestore.collection('profiles').doc(userCreate.user.uid).set({
+            email: state.email,
+            name:state.name,
+            imgprofile: "",
+            phone: "",
+            role: "user"
+          });
+          alert('สมัครสมาชิกเรียบร้อย');
+          setState({
+            name: "",
+            email: "",
+            password: "",
+            confirmpassword: "",
+          });
+         }
+      }
+    } catch (error) {
+      console.log('error create new account : ',error)
     }
   };
 
@@ -55,6 +79,13 @@ function SignUpForm() {
           value={state.password}
           onChange={handleChange}
           placeholder="Password"
+        />
+        <input
+          type="password"
+          name="confirmpassword"
+          value={state.confirmpassword}
+          onChange={handleChange}
+          placeholder="Confirm Password"
         />
         <button>Sign Up</button>
       </form>
