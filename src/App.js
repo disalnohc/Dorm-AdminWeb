@@ -34,10 +34,7 @@ const App = () => {
               <div className="content_body">
                 <Box m="20px">
                   <Routes>
-                    <Route
-                      path="/admin"
-                      element={<Navigate to="/admin/dashboard" />}
-                    />
+                    <Route path="/" element={<Navigate to="/admin/dashboard" />} />
                     <Route path="/admin/dashboard" element={<Dashboard />} />
                     <Route path="/admin/calendar" element={<Calender />} />
                     <Route path="/admin/news" element={<News />} />
