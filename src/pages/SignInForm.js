@@ -2,23 +2,35 @@ import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { firestore } from '../firebase';
 const SignInForm = ({ onLogin }) => { 
-  const [username, setUsername] = useState('a@a.com');
-  const [password, setPassword] = useState('123456');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const userLogin = await auth.signInWithEmailAndPassword('a@a.com', '123456');
+      const userCredential = await auth.signInWithEmailAndPassword(username, password);
+      const user = userCredential.user.uid;
       
-      if (userLogin) {
-        alert('ล็อกอินสำเร็จ');
-        onLogin(); 
+      const userData = await firestore.collection('profiles').doc(user).get();
+      
+      if (userData.exists) {
+        const userRole = userData.data().role;
+        if(userRole === 'admin'){
+          alert('Admin');
+          onLogin();
+        } else {
+          alert('User');
+        }
       } else {
-        alert('ล็อกอินไม่สำเร็จ');
+        console.log('ไม่พบข้อมูลผู้ใช้');
       }
     } catch (error) {
-      console.log('เข้าสู่ระบบไม่สำเร็จ : ', error);
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("เข้าสู่ระบบไม่สำเร็จ: ", errorCode, errorMessage);
     }
   };
+  
   
 
   return (
