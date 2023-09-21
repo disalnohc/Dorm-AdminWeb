@@ -20,7 +20,8 @@
     margin: -20px 0 50px;
   }
   
-  h1 {
+  .h1 {
+    color: #222;
     font-weight: bold;
     margin: 0;
   }
@@ -30,6 +31,7 @@
   }
   
   p {
+    color: #222;
     font-size: 14px;
     font-weight: 100;
     line-height: 20px;
@@ -70,8 +72,9 @@
   }
   
   button.ghost {
+    color: #222;
     background-color: transparent;
-    border-color: #ffffff;
+    border-color: #222;
   }
   
   form {
