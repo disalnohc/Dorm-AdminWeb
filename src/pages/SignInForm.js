@@ -39,8 +39,8 @@ const SignInForm = ({ onLogin }) => {
               onChange={(e) => setRememberMe(e.target.checked)}
             />
             Remember Me
+            <a className="forgot" href="/forgot-password">Forgot your password?</a>
           </label>
-          <a className="forgot" href="/forgot-password">Forgot your password?</a>
         </div>
         <button className="button" onClick={handleLogin}>Sign In</button>
       </form>

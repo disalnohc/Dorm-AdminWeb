@@ -21,7 +21,7 @@ export default function LoginForm({ onLogin }) {
         <div className="overlay-container-2">
           <div className="overlay-2">
             <div className="overlay-panel-2 overlay-left-2">
-              <p className="h1">Welcome Back!</p>
+              <h3 style={{color:"#000"}}>Welcome Back!</h3>
               <p>
                 To keep connected with us please login with your personal info
               </p>
@@ -34,7 +34,7 @@ export default function LoginForm({ onLogin }) {
               </button>
               </div>
             <div className="overlay-panel-2 overlay-right-2">
-              <p>Hello, Friend!</p>
+              <h3 style={{color:"#000"}}>Hello, Friend!</h3>
               <p>Enter your personal details and start journey with us</p>
               <button
                 className="ghost "
