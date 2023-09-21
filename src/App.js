@@ -1,117 +1,62 @@
-import Home from "./pages/home/Home";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import Navbar from "./components/navbar/Navbar";
-import Footer from "./components/footer/Footer";
-import Menu from "./components/menu/Menu";
-import Login from "./pages/login/Login";
-import Repair from "./pages/repair/Repair";
-import Clean from "./pages/clean/Clean";
-import Security from "./pages/security/Security";
-import Room from "./pages/room/Room";
-import Detail from "./pages/detail/Detail";
-import Electricity from "./pages/electricity/Electricity";
-import Water from "./pages/water/Water";
-import New from "./pages/new/New";
-import Calender from "./pages/calendar/Calender";
-import Personnel from "./pages/personnel/Personnel"
-import Notifybill from "./pages/notifybill/Notifybill";
-import Paybill from "./pages/paybill/Paybill";
-import "./styles/global.css";
+import React, { useState } from 'react';
+import LoginForm from './pages/LoginForm';
+import { Routes, Route } from 'react-router-dom';
+import HeaderBar from './layout/HeaderBar';
+import { CssBaseline, Box } from '@mui/material';
+import SideBar from './layout/SideBar';
+import Dashboard from './pages/admin/dashboard/Dashboard';
+import Calender from './pages/admin/calendar/Calender';
+import News from './pages/admin/new/New';
+import Clean from './pages/admin/clean/Clean';
+import Detail from './pages/admin/detail/Detail';
+import Notifybill from './pages/admin/notifybill/Notifybill';
+import Paybill from './pages/admin/paybill/Paybill';
+import Personnel from './pages/admin/personnel/Personnel';
+import Repair from './pages/admin/repair/Repair';
+import Room from './pages/admin/room/Room';
+import Security from './pages/admin/security/Security';
+import Water from './pages/admin/water/Water';
+import Electricity from './pages/admin/electricity/Electricity';
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-
-const queryClient = new QueryClient();
-
-function App() {
-  const Layout = () => {
-    return (
-      <div className="main">
-        <Navbar />
-        <div className="container">
-          <div className="menuContainer">
-            <Menu />
-          </div>
-          <div className="contentContainer">
-            <QueryClientProvider client={queryClient}>
-              <Outlet />
-            </QueryClientProvider>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  };
-
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Layout />,
-      children: [
-        {
-          path: "/",
-          element: <Home />,
-        },
-        {
-          path: "/repair",
-          element: <Repair />,
-        },
-        {
-          path: "/clean",
-          element: <Clean />,
-        },
-        {
-          path: "/security",
-          element: <Security />,
-        },
-        {
-          path: "/room",
-          element: <Room />,
-        },
-        {
-          path: "/detail",
-          element: <Detail />,
-        },
-        {
-          path: "/electricity",
-          element: <Electricity />,
-        },
-        {
-          path: "/water",
-          element: <Water />,
-        },
-        {
-          path: "/new",
-          element: <New />,
-        },
-        {
-          path: "/calendar",
-          element: <Calender />,
-        },
-        {
-          path: "/personnel",
-          element: <Personnel />,
-        },
-        {
-          path: "/notifybill",
-          element: <Notifybill />,
-        },
-        {
-          path: "/paybill",
-          element: <Paybill />,
-        },
-      ],
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-  ]);
-
-  return <RouterProvider router={router} />;
-}
+  return (
+    <div className="app">
+      <>
+        <CssBaseline />
+        {isAuthenticated ? (
+          <>
+            <SideBar />
+            <main className="content">
+              <HeaderBar />
+              <div className="content_body">
+                <Box m="20px">
+                  <Routes>
+                    <Route path="/admin/dashboard" element={<Dashboard />} />
+                    <Route path="/admin/calendar" element={<Calender />} />
+                    <Route path="/admin/news" element={<News />} />
+                    <Route path="/admin/clean" element={<Clean />} />
+                    <Route path="/admin/detail" element={<Detail />} />
+                    <Route path="/admin/notifybill" element={<Notifybill />} />
+                    <Route path="/admin/paybill" element={<Paybill />} />
+                    <Route path="/admin/personnel" element={<Personnel />} />
+                    <Route path="/admin/repair" element={<Repair />} />
+                    <Route path="/admin/room" element={<Room />} />
+                    <Route path="/admin/water" element={<Water />} />
+                    <Route path="/admin/electricity" element={<Electricity />} />
+                    <Route path="/admin/security" element={<Security />} />
+                  </Routes>
+                </Box>
+              </div>
+            </main>
+          </>
+        ) : (
+          <LoginForm onLogin={() => setIsAuthenticated(true)} />
+        )}
+      </>
+    </div>
+  );
+};
 
 export default App;

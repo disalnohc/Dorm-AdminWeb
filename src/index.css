@@ -1,13 +1,79 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
+
+html,
+body,
+#root,
+.app,
+.content {
+  height: 100%;
+  width: 100%;
+  font-family: "Source Sans Pro", sans-serif;
+  background-color:#f4f4f4;
+  overflow: hidden;
+}
+.content_body{
+  background: #ffffff;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+}
+.app {
+  display: flex;
+  position: relative;
+}
+.menu-bars {
+  text-decoration: none;
+  color: #000;
+}
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: #ffffff;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+
+ /* sidebar */
+ .main-sidebar {
+  background: #ffffff;
+  box-shadow: 5px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar{
+  height: 100%;
+}
+.sidebar-main{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.sidebar-main-a{
+  flex: 1;
+  margin-Bottom: 32px;
+}
+.sidebar-icon{
+  margin: 10px 0 20px 20px; 
+}
+.sidebar-box{
+  display: flex;
+  justify-content: space-between;
+  align-Items: center;
+  margin-left: 15px;
+}
+.sidebar-menu{
+    padding: 0 24px;
+    margin-Bottom: 8px;
+    margin-Top: 32px;
 }

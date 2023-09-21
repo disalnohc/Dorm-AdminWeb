@@ -1,0 +1,32 @@
+.main-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    max-height: 400px - 500px;
+}
+.add-button {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+.card-img-top {
+    height: 400px; 
+    object-fit: cover; 
+  }
+.add-news-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  .add-news-button:hover {
+    background-color: #0056b3;
+  }
+  
