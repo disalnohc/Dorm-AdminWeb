@@ -16,7 +16,6 @@ const Calender = () => {
   const [event, setEvent] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
 
-
   const handleSaveEvent = async () => {
     try {
       const newEvent = {
@@ -61,7 +60,12 @@ const Calender = () => {
       const collRef = firestore.collection('Apartment').doc('Event').collection('EventData');
 
       collRef.onSnapshot((querySnap) => {
-        const newEvent = querySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const newEvent = querySnap.docs.map(doc => ({
+          title: doc.data().title,
+          text: doc.data().text,
+          startTimeEvent: new Date(doc.data().startTimeEvent),
+          endTimeEvent: new Date(doc.data().endTimeEvent),
+        }));
         //console.log(newEvent)
         setEvent(newEvent);
       })
