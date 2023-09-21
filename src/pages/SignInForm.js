@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import './UI.css';
-const SignInForm = ({ onLogin }) => { 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+import React, { useState } from "react";
+import "./UI.css";
+const SignInForm = ({ onLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleLogin = () => {
-    if (username === 'admin' && password === '1234') {
+    if (username === "admin" && password === "1234") {
       onLogin();
     } else {
-      alert('Invalid username or password');
+      alert("Invalid username or password");
     }
   };
 
@@ -17,21 +18,31 @@ const SignInForm = ({ onLogin }) => {
       <form>
         <h1>Sign in</h1>
         <input
-        className='input'
+          className="input"
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
-        className='input'
+          className="input"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <a href="/forgot-password">Forgot your password?</a>
-        <button onClick={handleLogin}>Sign In</button>
+        <div className="LabelBox">
+          <label>
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            Remember Me
+          </label>
+          <a className="forgot" href="/forgot-password">Forgot your password?</a>
+        </div>
+        <button className="button" onClick={handleLogin}>Sign In</button>
       </form>
     </div>
   );

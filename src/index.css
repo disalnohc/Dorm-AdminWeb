@@ -8,10 +8,10 @@ body,
   height: 100%;
   width: 100%;
   font-family: "Source Sans Pro", sans-serif;
-  background-color:#f4f4f4;
+  background-color: #f4f4f4;
   overflow: hidden;
 }
-.content_body{
+.content_body {
   background: #ffffff;
   width: 100%;
   height: 100%;
@@ -20,6 +20,9 @@ body,
 .app {
   display: flex;
   position: relative;
+  background-image: url("../src/img/CircleBg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .menu-bars {
   text-decoration: none;
@@ -29,51 +32,47 @@ body,
   width: 10px;
 }
 
-
 ::-webkit-scrollbar-track {
   background: #ffffff;
 }
-
 
 ::-webkit-scrollbar-thumb {
   background: #ffffff;
 }
 
-
 ::-webkit-scrollbar-thumb:hover {
   background: #ffffff;
 }
 
-
- /* sidebar */
- .main-sidebar {
+/* sidebar */
+.main-sidebar {
   background: #ffffff;
   box-shadow: 5px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.sidebar{
+.sidebar {
   height: 100%;
 }
-.sidebar-main{
+.sidebar-main {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-.sidebar-main-a{
+.sidebar-main-a {
   flex: 1;
-  margin-Bottom: 32px;
+  margin-bottom: 32px;
 }
-.sidebar-icon{
-  margin: 10px 0 20px 20px; 
+.sidebar-icon {
+  margin: 10px 0 20px 20px;
 }
-.sidebar-box{
+.sidebar-box {
   display: flex;
   justify-content: space-between;
-  align-Items: center;
+  align-items: center;
   margin-left: 15px;
 }
-.sidebar-menu{
-    padding: 0 24px;
-    margin-Bottom: 8px;
-    margin-Top: 32px;
+.sidebar-menu {
+  padding: 0 24px;
+  margin-bottom: 8px;
+  margin-top: 32px;
 }
