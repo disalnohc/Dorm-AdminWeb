@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LoginForm from './pages/LoginForm';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import HeaderBar from './layout/HeaderBar';
 import { CssBaseline, Box } from '@mui/material';
 import SideBar from './layout/SideBar';
@@ -33,6 +33,10 @@ const App = () => {
               <div className="content_body">
                 <Box m="20px">
                   <Routes>
+                    <Route
+                      path="/admin"
+                      element={<Navigate to="/admin/dashboard" />}
+                    />
                     <Route path="/admin/dashboard" element={<Dashboard />} />
                     <Route path="/admin/calendar" element={<Calender />} />
                     <Route path="/admin/news" element={<News />} />
