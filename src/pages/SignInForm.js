@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { firestore } from '../firebase';
-const SignInForm = ({ onLogin }) => { 
+const SignInForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -10,12 +10,12 @@ const SignInForm = ({ onLogin }) => {
     try {
       const userCredential = await auth.signInWithEmailAndPassword(username, password);
       const user = userCredential.user.uid;
-      
+
       const userData = await firestore.collection('profiles').doc(user).get();
-      
+
       if (userData.exists) {
         const userRole = userData.data().role;
-        if(userRole === 'admin'){
+        if (userRole === 'admin') {
           alert('Admin');
           onLogin();
         } else {
@@ -29,9 +29,7 @@ const SignInForm = ({ onLogin }) => {
       const errorMessage = error.message;
       console.error("เข้าสู่ระบบไม่สำเร็จ: ", errorCode, errorMessage);
     }
-  };
-  
-  
+  }
 
   return (
     <div className="form-container-2 sign-in-container-2">

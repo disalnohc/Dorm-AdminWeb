@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import LoginForm from './pages/LoginForm';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HeaderBar from './layout/HeaderBar';
@@ -19,18 +19,44 @@ import Water from './pages/admin/water/Water';
 import Electricity from './pages/admin/electricity/Electricity';
 import Profile from './pages/admin/profile/Profile'
 
+import { auth } from './firebase';
+import { firestore } from './firebase';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin , setIsAdmin] = useState(false);
 
-  return (
-    <div className="app">
+  useEffect(() => {
+    const isLogin = auth.onAuthStateChanged((authUser) => {
+      if(authUser) {
+        setIsAuthenticated(true);
+        const user = authUser.uid;
+
+        const userData = firestore.collection('profiles').doc(user).get();
+
+      if (userData.exists) {
+        const userRole = userData.data().role;
+        if (userRole === 'admin') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } else {
+        console.log('ไม่พบข้อมูลผู้ใช้');
+      }
+
+      }
+    });
+    return () => {
+      isLogin();
+    };
+  },[]);
+
+  function admin_menu() {
+    return(
       <>
-        <CssBaseline />
-        {isAuthenticated ? (
-          <>
             <SideBar />
             <main className="content">
-              <HeaderBar />
+              <HeaderBar setIsAuthenticated={setIsAuthenticated}/>
               <div className="content_body">
                 <Box m="20px">
                   <Routes>
@@ -54,9 +80,41 @@ const App = () => {
               </div>
             </main>
           </>
-        ) : (
-          <LoginForm onLogin={() => setIsAuthenticated(true)} />
-        )}
+    )
+  }
+
+  function user_menu() {
+    return(
+      <>
+            <SideBar />
+            <main className="content">
+              <HeaderBar setIsAuthenticated={setIsAuthenticated}/>
+              <div className="content_body">
+                <Box m="20px">
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/user/profile" />} /> {/* ใส่ Route User ตรงนี้ */}
+                    <Route path="/user/profile" element={<Profile />} />
+                  </Routes>
+                </Box>
+              </div>
+            </main>
+          </>
+    )
+  }
+
+  function login_menu() {
+    return(
+      <Routes>
+        <Route path="/" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
+      </Routes>
+    )
+  }
+
+  return (
+    <div className="app">
+      <>
+        <CssBaseline />
+        {isAuthenticated ? (isAdmin ? admin_menu() : user_menu()) : login_menu()}
       </>
     </div>
   );
