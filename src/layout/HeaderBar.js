@@ -3,7 +3,7 @@ import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { Link , useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-const HeaderBar = ({ setIsAuthenticated }) => {
+const HeaderBar = ({ setIsAuthenticated , setIsAdmin }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const handleMenu = (event) => {
@@ -18,6 +18,7 @@ const HeaderBar = ({ setIsAuthenticated }) => {
     auth.signOut().then(() => {
       alert('Sign Out');
       setIsAuthenticated(false);
+      setIsAdmin(false);
       navigate('/');
     }).catch((error) => {
       console.log('error sign out : ',error);

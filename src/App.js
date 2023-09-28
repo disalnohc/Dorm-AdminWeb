@@ -21,16 +21,23 @@ import Profile from './pages/admin/profile/Profile'
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
+
+import { TailSpin } from 'react-loader-spinner'; //loading 
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [getRole, setGetRole] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
-    const isLogin = auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setIsAuthenticated(true);
+        setIsLoading(true);
         const user = authUser.uid;
-        console.log(user)
+        console.log(user);
         const docRef = firestore.collection('profiles').doc(user);
 
         docRef.get()
@@ -38,11 +45,14 @@ const App = () => {
             if (doc.exists) {
               const userData = doc.data();
               const role = userData.role;
-              console.log("Role:", role);
               if (role === 'admin') {
                 setIsAdmin(true);
+                setGetRole(true);
+                setIsLoading(false);
               } else {
                 setIsAdmin(false);
+                setGetRole(true);
+                setIsLoading(false);
               }
             } else {
               console.log("ไม่พบเอกสารสำหรับผู้ใช้นี้");
@@ -51,37 +61,47 @@ const App = () => {
           .catch((error) => {
             console.log("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
           });
+      } else {
+        setIsAdmin(false);
+        setIsAuthenticated(false);
+        setGetRole(false);
+        setIsLoading(false);
       }
     });
+
     return () => {
-      isLogin();
+      unsubscribe();
     };
   }, []);
 
+
   function admin_menu() {
+    console.log('admin_menu');
     return (
       <>
         <SideBar />
         <main className="content">
-          <HeaderBar setIsAuthenticated={setIsAuthenticated} />
+          <HeaderBar setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
           <div className="content_body">
             <Box m="20px">
               <Routes>
-                <Route path="/" element={<Navigate to="/admin/dashboard" />} />
-                <Route path="/admin/dashboard" element={<Dashboard />} />
-                <Route path="/admin/calendar" element={<Calender />} />
-                <Route path="/admin/news" element={<News />} />
-                <Route path="/admin/clean" element={<Clean />} />
-                <Route path="/admin/detail" element={<Detail />} />
-                <Route path="/admin/notifybill" element={<Notifybill />} />
-                <Route path="/admin/paybill" element={<Paybill />} />
-                <Route path="/admin/personnel" element={<Personnel />} />
-                <Route path="/admin/repair" element={<Repair />} />
-                <Route path="/admin/room" element={<Room />} />
-                <Route path="/admin/water" element={<Water />} />
-                <Route path="/admin/electricity" element={<Electricity />} />
-                <Route path="/admin/security" element={<Security />} />
-                <Route path="/admin/profile" element={<Profile />} />
+                <>
+                  <Route path="/" element={<Navigate to="/admin/dashboard" />} />
+                  <Route path="/admin/dashboard" element={<Dashboard />} />
+                  <Route path="/admin/calendar" element={<Calender />} />
+                  <Route path="/admin/news" element={<News />} />
+                  <Route path="/admin/clean" element={<Clean />} />
+                  <Route path="/admin/detail" element={<Detail />} />
+                  <Route path="/admin/notifybill" element={<Notifybill />} />
+                  <Route path="/admin/paybill" element={<Paybill />} />
+                  <Route path="/admin/personnel" element={<Personnel />} />
+                  <Route path="/admin/repair" element={<Repair />} />
+                  <Route path="/admin/room" element={<Room />} />
+                  <Route path="/admin/water" element={<Water />} />
+                  <Route path="/admin/electricity" element={<Electricity />} />
+                  <Route path="/admin/security" element={<Security />} />
+                  <Route path="/admin/profile" element={<Profile />} />
+                </>
               </Routes>
             </Box>
           </div>
@@ -91,16 +111,19 @@ const App = () => {
   }
 
   function user_menu() {
+    console.log('user_menu')
     return (
       <>
         <SideBar />
         <main className="content">
-          <HeaderBar setIsAuthenticated={setIsAuthenticated} />
+          <HeaderBar setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
           <div className="content_body">
             <Box m="20px">
               <Routes>
-                <Route path="/" element={<Navigate to="/user/profile" />} /> {/* ใส่ Route User ตรงนี้ */}
-                <Route path="/user/profile" element={<Profile />} />
+                <>
+                  <Route path="/" element={<Navigate to="/user/profile" />} />
+                  <Route path="/user/profile" element={<Profile />} />
+                </>
               </Routes>
             </Box>
           </div>
@@ -109,7 +132,36 @@ const App = () => {
     )
   }
 
-  function login_menu() {
+  if (isAuthenticated === true) {
+    if (isLoading === false && getRole === true) {
+      return (
+        <div className="app">
+          <>
+            <CssBaseline />
+            {isAdmin ? admin_menu() : user_menu()}
+          </>
+        </div>
+      );
+    } else {
+      return (
+        <div className="app" style={{display : 'flex' , justifyContent : 'center' , alignItems : 'center'}}>
+          <>
+            <CssBaseline />
+            <TailSpin
+              height="160"
+              width="160"
+              color="orange"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </>
+        </div>
+      );
+    }
+  } else {
     return (
       <Routes>
         <Route path="/" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
@@ -117,14 +169,5 @@ const App = () => {
     )
   }
 
-  return (
-    <div className="app">
-      <>
-        <CssBaseline />
-        {isAuthenticated ? (isAdmin ? admin_menu() : user_menu()) : login_menu()}
-      </>
-    </div>
-  );
 };
-
 export default App;
