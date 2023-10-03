@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import LoginForm from './pages/LoginForm';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import HeaderBar from './layout/HeaderBar';
 import { CssBaseline, Box } from '@mui/material';
+
+import LoginForm from './pages/LoginForm';
+
+//admin
+import HeaderBar from './layout/HeaderBar';
 import SideBar from './layout/SideBar';
 import Dashboard from './pages/admin/dashboard/Dashboard';
 import Calender from './pages/admin/calendar/Calender';
@@ -18,6 +21,10 @@ import Security from './pages/admin/security/Security';
 import Water from './pages/admin/water/Water';
 import Electricity from './pages/admin/electricity/Electricity';
 import Profile from './pages/admin/profile/Profile'
+
+//user
+import Header from './components/header/Header';
+import HomePage from './pages/users/home/Home';
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -114,15 +121,14 @@ const App = () => {
     console.log('user_menu')
     return (
       <>
-        <SideBar />
         <main className="content">
-          <HeaderBar setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
+          <Header setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
           <div className="content_body">
-            <Box m="20px">
+            <Box>
               <Routes>
                 <>
                   <Route path="/" element={<Navigate to="/user/profile" />} />
-                  <Route path="/user/profile" element={<Profile />} />
+                  <Route path="/user/profile" element={<HomePage />} />
                 </>
               </Routes>
             </Box>
