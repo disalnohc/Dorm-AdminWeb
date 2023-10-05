@@ -5,6 +5,7 @@ import { firestore } from "../firebase";
 function SignUpForm() {
   const [state, setState] = React.useState({
     name: "",
+    number: "",
     email: "",
     password: "",
     confirmpassword: "",
@@ -37,14 +38,14 @@ function SignUpForm() {
           await firestore.collection('profiles').doc(userCreate.user.uid).set({
             email: state.email,
             name:state.name,
-            imgprofile: "",
-            phone: "",
+            phone: state.number,
             role: "user"
           });
           alert('สมัครสมาชิกเรียบร้อย');
           setState({
             name: "",
             email: "",
+            number: "",
             password: "",
             confirmpassword: "",
           });
@@ -65,6 +66,14 @@ function SignUpForm() {
           value={state.name}
           onChange={handleChange}
           placeholder="Name"
+        />
+        <input
+          type="tel"
+          name="number"
+          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          value={state.number}
+          onChange={handleChange}
+          placeholder="Phone Number"
         />
         <input
           type="email"
