@@ -4,7 +4,7 @@ import Back from "../common/Back"
 import "../home/featured/Featured.css"
 import FeaturedCard from "../home/featured/FeaturedCard"
 
-const Services = () => {
+const Tour = () => {
   return (
     <>
       <section className='services mb'>
@@ -17,4 +17,4 @@ const Services = () => {
   )
 }
 
-export default Services
+export default Tour

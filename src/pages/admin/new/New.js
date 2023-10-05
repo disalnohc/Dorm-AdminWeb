@@ -179,7 +179,7 @@ function News() {
   };
 
   return (
-    <div className="app">
+    <div>
       <div className="main-content">
         <div className="info">
           <h1>บอร์ดข่าวสาร</h1>

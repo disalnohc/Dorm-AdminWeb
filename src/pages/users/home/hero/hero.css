@@ -1,5 +1,5 @@
 .hero {
-  background-image: url("../../../../../public/images/banner.png");
+  background-image: url("../../images/banner.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -47,6 +47,11 @@ form .box:nth-child(1) {
 }
 form h4 {
   font-weight: 500;
+}
+text {
+  font-size: 50px;
+  color: #fff;
+  border: #fff;
 }
 @media screen and (max-width: 800px) {
   .hero .container {

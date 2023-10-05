@@ -9,7 +9,6 @@ import { faLinkedin } from "@fortawesome/free-brands-svg-icons/faLinkedin";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons/faTwitter";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons/faInstagram";
 
-
 const team = [
   {
     list: "50",
@@ -123,6 +122,7 @@ const Team = () => {
             </div>
           </div>
         </section>
+
       </>
     )
   }

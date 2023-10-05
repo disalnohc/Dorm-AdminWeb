@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { CssBaseline, Box } from '@mui/material';
 
 import LoginForm from './pages/LoginForm';
+import RegisterForm from './pages/RegisterForm';
+
 
 //admin
 import HeaderBar from './layout/HeaderBar';
@@ -23,8 +25,14 @@ import Electricity from './pages/admin/electricity/Electricity';
 import Profile from './pages/admin/profile/Profile'
 
 //user
-import Header from './components/header/Header';
+import Header from './pages/users/common/header/Header';
+import Foonter from './pages/users/common/footer/Footer';
 import HomePage from './pages/users/home/Home';
+import About from './pages/users/about/About';
+import Blog from './pages/users/blog/Blog';
+import Contact from './pages/users/contact/Contact';
+import Review from './pages/users/review/Review';
+
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -118,25 +126,30 @@ const App = () => {
   }
 
   function user_menu() {
-    console.log('user_menu')
+    console.log('user_menu');
     return (
       <>
         <main className="content">
           <Header setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
-          <div className="content_body">
+          <div className="content_user">
             <Box>
               <Routes>
                 <>
-                  <Route path="/" element={<Navigate to="/user/profile" />} />
-                  <Route path="/user/profile" element={<HomePage />} />
+                  <Route path="/" element={<Navigate to="/user/home" />} />
+                  <Route path="/user/home" element={<HomePage />} />
+                  <Route path="/user/about" element={<About />} />
+                  <Route path="/user/contact" element={<Contact />} />
+                  <Route path="/user/review" element={<Review />} />
+                  <Route path="/user/blog" element={<Blog />} />
                 </>
               </Routes>
             </Box>
           </div>
         </main>
       </>
-    )
+    );
   }
+  
 
   if (isAuthenticated === true) {
     if (isLoading === false && getRole === true) {
@@ -169,9 +182,25 @@ const App = () => {
     }
   } else {
     return (
-      <Routes>
-        <Route path="/" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
-      </Routes>
+      <main className="content">
+      <Header setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
+      <div className="content_user">
+        <Box>
+          <Routes>
+            <>
+              <Route path="/" element={<Navigate to="/user/home" />} />
+              <Route path="/user/home" element={<HomePage />} />
+              <Route path="/user/about" element={<About />} />
+              <Route path="/user/contact" element={<Contact />} />
+              <Route path="/user/review" element={<Review />} />
+              <Route path="/user/blog" element={<Blog />} />
+              <Route path="/user/login" element={<LoginForm />} />
+              <Route path="/user/regsiter" element={<RegisterForm />} />
+            </>
+          </Routes>
+        </Box>
+      </div>
+    </main>
     )
   }
 

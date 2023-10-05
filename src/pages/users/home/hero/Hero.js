@@ -8,6 +8,7 @@ const Hero = () => {
     <>
       <section className='hero'>
         <div className='container'>
+          <text>Welcome to our hotel.</text>
           <form className='flex' style={{ flexDirection: 'row' }}>
             <div className='box'>
               <span>City/Street</span>
