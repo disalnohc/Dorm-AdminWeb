@@ -101,7 +101,7 @@ const App = () => {
             <Box m="20px">
               <Routes>
                 <>
-                  <Route path="/" element={<Navigate to="/admin/dashboard" />} />
+                  <Route path="/user/login" element={<Navigate to="/admin/dashboard" />} />
                   <Route path="/admin/dashboard" element={<Dashboard />} />
                   <Route path="/admin/calendar" element={<Calender />} />
                   <Route path="/admin/news" element={<News />} />
@@ -135,7 +135,7 @@ const App = () => {
             <Box>
               <Routes>
                 <>
-                  <Route path="/" element={<Navigate to="/user/home" />} />
+                  <Route path="/user/login" element={<Navigate to="/user/home" />} />
                   <Route path="/user/home" element={<HomePage />} />
                   <Route path="/user/about" element={<About />} />
                   <Route path="/user/contact" element={<Contact />} />
@@ -194,7 +194,7 @@ const App = () => {
               <Route path="/user/contact" element={<Contact />} />
               <Route path="/user/review" element={<Review />} />
               <Route path="/user/blog" element={<Blog />} />
-              <Route path="/user/login" element={<LoginForm />} />
+              <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
               <Route path="/user/regsiter" element={<RegisterForm />} />
             </>
           </Routes>
