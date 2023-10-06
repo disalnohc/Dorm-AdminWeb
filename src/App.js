@@ -199,7 +199,6 @@ const App = () => {
               <Route path="/user/blog" element={<Blog />} /> 
               <Route path="/user/regsiter" element={<RegisterForm />} />
               <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
-             
             </>
           </Routes>
         </Box>

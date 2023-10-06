@@ -19,7 +19,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-import { firestore } from "../../firebase";
+import { firestore , storage} from "../../firebase";
 
 const DataTableAC = (props) => {
 
@@ -29,12 +29,47 @@ const DataTableAC = (props) => {
   const [showSmallModal, setShowSmallModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roomId, setRoomId] = useState('');
-
+  const [roomData , setRoomData] = useState([]);
+  const [UserData , setUserData] = useState([]);
   const [showOccupied , setShowOccupied] = useState(false);
   const [showAssign , setShowAssign] = useState(false);
-
+  const [showSlipImg , setShowSlipImg ] = useState('');
   const [smallModalTitle , setSmallModalTitle] = useState(null);
   const [smallModalDetail , setSmallModalDetail] = useState(null);
+
+  const handleFetchDataRoom = async (status,roomNumber) => {
+    try {
+      console.log(roomNumber);
+      const DocRef = await firestore.collection('rooms').doc(roomNumber);
+      DocRef.get().then((doc) => {
+        setRoomData(doc.data());
+
+        if(status === 'Assign'){const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
+        ImgRef.getDownloadURL().then((url) => {
+          setShowSlipImg(url);
+        })}
+        if(doc.exists){
+          firestore.collection('profiles').doc(doc.data().owner).get().then((doc) => {
+            if(doc.exists){
+              setUserData(doc.data());
+              //console.log(doc.data());
+              if(status === 'Occupied'){
+                setShowOccupied(true)
+              } else if (status === 'Assign'){
+                setShowAssign(true);
+              }
+            }else{
+              console.log('ไม่พบข้อมูลเจ้าของห้อง')
+            }
+          })
+        }else{
+          console.log('not have this room');
+        }
+      })
+    } catch (error) {
+      console.log('error fetch data : ',error);
+    }
+  }
 
   const handleDelete = async () => {
     try {
@@ -96,21 +131,6 @@ const DataTableAC = (props) => {
 
   const handleShow = () => {
     setShowModal(true);
-  };
-
-  const handleEdit = (status) => {
-    //alert(roomNumber + " " + status)
-    switch(status) {
-      case 'Occupied' :
-        setShowOccupied(true);
-        //alert('Occupied');
-        break;
-      case 'Assign' :
-        setShowAssign(true);
-        //alert('Assign');
-        break;
-      default : console.log('error room status');      
-    }
   };
 
   const handleOccupied = async () => {
@@ -253,11 +273,11 @@ const DataTableAC = (props) => {
           <Modal.Body>
             <Form>
             <Form.Group controlId="profile owner">
-                <Form.Label>Profile Name</Form.Label><br />
-                <Form.Label>Profile Phone Number</Form.Label><br />
-                <Form.Label>Profile Email</Form.Label><br />
-                <Form.Label>Profile DateIn</Form.Label><br />
-                <Form.Label>Profile DateOut</Form.Label>
+                <Form.Label>Profile Name : {UserData.name}</Form.Label><br />
+                <Form.Label>Profile Phone Number : {UserData.phone}</Form.Label><br />
+                <Form.Label>Profile Email : {UserData.email}</Form.Label><br />
+                <Form.Label>Profile DateIn : {roomData.datein}</Form.Label><br />
+                <Form.Label>Profile DateOut : {roomData.dateout}</Form.Label>
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -279,12 +299,12 @@ const DataTableAC = (props) => {
           <Modal.Body>
             <Form>
               <Form.Group controlId="profile owner">
-                <Form.Label>Profile Name</Form.Label><br />
-                <Form.Label>Profile Phone Number</Form.Label><br />
-                <Form.Label>Profile Email</Form.Label><br />
-                <Form.Label>Profile DateIn</Form.Label><br />
-                <Form.Label>Profile DateOut</Form.Label>
-                <img src="profile_image_url_here" alt="slip_bank_images" />
+              <Form.Label>Profile Name : {UserData.name}</Form.Label><br />
+                <Form.Label>Profile Phone Number : {UserData.phone}</Form.Label><br />
+                <Form.Label>Profile Email : {UserData.email}</Form.Label><br />
+                <Form.Label>Profile DateIn : {roomData.datein}</Form.Label><br />
+                <Form.Label>Profile DateOut : {roomData.dateout}</Form.Label><br />
+                <img src={showSlipImg} alt="slip_bank_images" />
               </Form.Group>
             </Form>
           </Modal.Body>
@@ -315,7 +335,7 @@ const DataTableAC = (props) => {
             params.row.status !== "Vacant" && (
               <IconButton onClick={() => {
                 setRoomId(params.row.roomNumber);
-                handleEdit(params.row.status);
+                handleFetchDataRoom(params.row.status , params.row.roomNumber);
               }}>
                 <PageviewIcon />
               </IconButton>

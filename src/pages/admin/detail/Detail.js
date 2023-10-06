@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./detail.css";
 import DataTableAC from "../../../components/dataTableAC/DataTableAC";
 import Add from "../../../components/add/Add";
-import { rooms  } from "../../../data.ts";
+import { firestore } from "../../../firebase";
 
 const columns = [
   { field: "id", headerName: "ID", width: 100 },
@@ -11,7 +11,13 @@ const columns = [
     headerName: "รูป",
     width: 150,
     renderCell: (params) => {
-      return React.createElement("img", { src: params.row.img || "/noavatar.png", alt: "" });
+      return (
+        <img
+          src={params.row.img ? `https://firebasestorage.googleapis.com/v0/b/hopak-8af20.appspot.com/o/profiles_image%2F${params.row.img}.jpg?alt=media` : "/noavatar.png"}
+          alt=""
+          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+        />
+      );
     },
   },
   {
@@ -23,11 +29,11 @@ const columns = [
   {
     field: "name",
     type: "string",
-    headerName: "ชื่อ - นามสกุล ",
+    headerName: "ชื่อ - นามสกุล",
     width: 220,
   },
   {
-    field: "details",
+    field: "email",
     type: "string",
     headerName: "อีเมล",
     width: 220,
@@ -41,17 +47,60 @@ const columns = [
 ];
 
 const Detail = () => {
-    const [open, setOpen] = useState(false);
-  
-    return (
-      <div>
-        <div className="header-content">
-          <h2>รายละเอียดผู้เช่า</h2>
-        </div>
-        <DataTableAC slug="products" columns={columns} rows={rooms} />
-        {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
+  const [open, setOpen] = useState(false);
+  const [memberData, setMemberData] = useState([]);
+
+  useEffect(() => {
+    try {
+      const fetchOwnerData = async () => {
+        const collRef = firestore.collection("rooms");
+        const querySnapshot = await collRef.get();
+        const memberDataArray = [];
+
+        await Promise.all(
+          querySnapshot.docs.map(async (docSnapshot) => {
+            const room = docSnapshot.id;
+            const owner = docSnapshot.data().owner;
+
+            if (owner !== "") {
+              const collRef = firestore.collection("profiles").doc(owner);
+              const doc = await collRef.get();
+
+              if (doc.exists) {
+                const data = {
+                  id: memberDataArray.length + 1,
+                  img: owner,
+                  roomNumber: room,
+                  name: doc.data().name,
+                  email: doc.data().email,
+                  phoneNumber: doc.data().phone,
+                };
+
+                memberDataArray.push(data);
+              }
+            }
+          })
+        );
+
+        setMemberData(memberDataArray);
+      };
+
+      fetchOwnerData();
+    } catch (error) {
+      console.log("error fetching owner data: ", error);
+    }
+  }, []);
+
+
+  return (
+    <div>
+      <div className="header-content">
+        <h2>รายละเอียดผู้เช่า</h2>
       </div>
-    );
-  };
-  
-  export default Detail;
+      <DataTableAC slug="products" columns={columns} rows={memberData} />
+      {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
+    </div>
+  );
+};
+
+export default Detail;
