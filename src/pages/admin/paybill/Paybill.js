@@ -37,8 +37,8 @@ const Paybill = () => {
   
     return (
       <div>
-        <div className="info">
-          <h1>จ่ายบิล</h1>
+        <div className="header-content">
+          <h2>จ่ายบิล</h2>
         </div>
         <DataTablePY slug="products" columns={columns} rows={paybill} />
         {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

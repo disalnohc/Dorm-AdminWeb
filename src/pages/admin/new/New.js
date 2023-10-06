@@ -141,7 +141,7 @@ function News() {
     } catch (error) {
       console.error("Error updating news: ", error);
     }
-  };  
+  };
 
   const handleDeleteNews = async (id) => {
     try {
@@ -181,9 +181,10 @@ function News() {
   return (
     <div>
       <div className="main-content">
-        <div className="info">
-          <h1>บอร์ดข่าวสาร</h1>
+        <div className="header-content">
+          <h2>บอร์ดข่าวสาร</h2>
         </div>
+
         <div className="row">
           {newsPage.map((news, index) => (
             <div key={index} className="col-md-6 mb-4">
@@ -227,9 +228,8 @@ function News() {
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
-              className={`btn btn-primary ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
+              className={`btn btn-primary ${currentPage === index + 1 ? "active" : ""
+                }`}
               onClick={() => handlePageChange(index + 1)}
             >
               {index + 1}

@@ -45,8 +45,8 @@ const Detail = () => {
   
     return (
       <div>
-        <div className="info">
-          <h1>รายละเอียดผู้เช่า</h1>
+        <div className="header-content">
+          <h2>รายละเอียดผู้เช่า</h2>
         </div>
         <DataTableAC slug="products" columns={columns} rows={rooms} />
         {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

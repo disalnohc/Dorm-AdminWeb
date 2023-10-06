@@ -1,0 +1,54 @@
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out;
+    margin-top: 15%;
+  }
+  
+  .card:hover {
+    transform: scale(1.02);
+  }
+  
+  .card-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .card-text {
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    color: #666;
+  }
+  
+  .card-text.rating {
+    font-weight: bold;
+    color: #ff9800; /* เลือกสีที่คุณต้องการสำหรับคะแนน */
+  }
+  
+  .card-text.author {
+    font-weight: bold;
+    color: #333;
+  }
+  .container-review {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 50px;
+  }
+  
+  .container-review h1 {
+    font-size: 30px; 
+    color: #333;
+  }
+  
+  .container-review p {
+    font-size: 16px; 
+    line-height: 1.5; 
+    color: #666; 
+  }
+  
+  

@@ -8,15 +8,17 @@ const Contact = () => {
     <>
       <section className='contact mb'>
         <Back name='Contact Us' title='Get Helps & Friendly Support' cover={img} />
-        <div className='container'>
+        <div className='container-contact'>
+          <h1>Contact Us</h1>
+          <p>It is a long established fact that a reader will be distracted by the of readable content of a page when lookings at its layouts the points of using.</p>
           <form className='shadow'>
             <h4>Fillup The Form</h4> <br />
             <div>
-              <input type='text' placeholder='Name' />
-              <input type='text' placeholder='Email' />
+              <input type='text' placeholder='Name' className="input" />
+              <input type='text' placeholder='Email' className="input" />
             </div>
-            <input type='text' placeholder='Subject' />
-            <textarea cols='30' rows='10'></textarea>
+            <input type='text' placeholder='Subject' className="inputSU" />
+            <textarea cols='30' rows='10' ></textarea>
             <button>Submit Request</button>
           </form>
         </div>

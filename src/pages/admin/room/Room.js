@@ -45,8 +45,8 @@ const Room = () => {
 
   return (
     <div>
-      <div className="info">
-        <h1>ผังห้องพัก</h1>
+      <div className="header-content">
+        <h2>ผังห้องพัก</h2>
       </div>
       <DataTableAC slug="room" columns={columns} rows={roomData} fetchDataRoom={fetchDataRoom} />
     </div>

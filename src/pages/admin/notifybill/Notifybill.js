@@ -37,8 +37,8 @@ const Notifybill = () => {
   
     return (
       <div>
-        <div className="info">
-          <h1>เเจ้งบิล</h1>
+        <div className="header-content">
+          <h2>เเจ้งบิล</h2>
         </div>
         <DataTableBI slug="products" columns={columns} rows={bill} />
         {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

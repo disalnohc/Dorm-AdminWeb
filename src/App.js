@@ -26,13 +26,14 @@ import Profile from './pages/admin/profile/Profile'
 
 //user
 import Header from './pages/users/common/header/Header';
-import Foonter from './pages/users/common/footer/Footer';
+//import Foonter from './pages/users/common/footer/Footer';
 import HomePage from './pages/users/home/Home';
 import About from './pages/users/about/About';
 import Blog from './pages/users/blog/Blog';
 import Contact from './pages/users/contact/Contact';
 import Review from './pages/users/review/Review';
-
+import Booking from './pages/users/booking/Booking';
+import Service from './pages/users/service/Service';
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -101,7 +102,7 @@ const App = () => {
             <Box m="20px">
               <Routes>
                 <>
-                  <Route path="/" element={<Navigate to="/admin/dashboard" />} />
+                  <Route path="/user/login" element={<Navigate to="/admin/dashboard" />} />
                   <Route path="/admin/dashboard" element={<Dashboard />} />
                   <Route path="/admin/calendar" element={<Calender />} />
                   <Route path="/admin/news" element={<News />} />
@@ -135,12 +136,14 @@ const App = () => {
             <Box>
               <Routes>
                 <>
-                  <Route path="/" element={<Navigate to="/user/home" />} />
+                  <Route path="/user/login" element={<Navigate to="/user/home" />} />
                   <Route path="/user/home" element={<HomePage />} />
                   <Route path="/user/about" element={<About />} />
                   <Route path="/user/contact" element={<Contact />} />
                   <Route path="/user/review" element={<Review />} />
                   <Route path="/user/blog" element={<Blog />} />
+                  <Route path="/user/booking" element={<Booking />} />
+                  <Route path="/user/service" element={<Service />} />
                 </>
               </Routes>
             </Box>
@@ -193,9 +196,10 @@ const App = () => {
               <Route path="/user/about" element={<About />} />
               <Route path="/user/contact" element={<Contact />} />
               <Route path="/user/review" element={<Review />} />
-              <Route path="/user/blog" element={<Blog />} />
-              <Route path="/user/login" element={<LoginForm />} />
+              <Route path="/user/blog" element={<Blog />} /> 
               <Route path="/user/regsiter" element={<RegisterForm />} />
+              <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
+             
             </>
           </Routes>
         </Box>

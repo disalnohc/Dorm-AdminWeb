@@ -1,11 +1,14 @@
 .hero {
-  background-image: url("../../images/banner.png");
+  background-image: url("../../images/Photo.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 90vh;
   width: 100%;
+  border-radius: 0px 0px 0px 291px; 
+  background-color: #FFF; 
 }
+
 .hero .container {
   padding-top: 15%;
 }
@@ -75,4 +78,22 @@ text {
 
 .box {
   margin-right: 20px; 
+}
+.flex-container {
+  display: flex;
+  width: 687px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.flex-container p {
+  margin: 0;
+  font-size: 60px;
+  color: #292F36;
+}
+.ip {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #292F36;
 }
