@@ -34,6 +34,9 @@ import Contact from './pages/users/contact/Contact';
 import Review from './pages/users/review/Review';
 import Booking from './pages/users/booking/Booking';
 import Service from './pages/users/service/Service';
+import RoomDetail from './pages/users/home/recent/RoomDetail';
+import AgreementPage from './pages/users/home/recent/AgreementPage';
+import BillPayment from './pages/users/home/recent/BillPayment';
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -144,6 +147,9 @@ const App = () => {
                   <Route path="/user/blog" element={<Blog />} />
                   <Route path="/user/booking" element={<Booking />} />
                   <Route path="/user/service" element={<Service />} />
+                  <Route path="/user/roomdetail" element={<RoomDetail />} />
+                  <Route path="/user/agreement" element={<AgreementPage/>} />
+                  <Route path="/user/billpayment" element={<BillPayment/>} />
                 </>
               </Routes>
             </Box>

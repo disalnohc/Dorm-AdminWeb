@@ -13,7 +13,7 @@ const Hero = () => {
             <text className="ip">There are many variations of the passages of Lorem Ipsum available, variations of the passages.</text>
           </div>
 
-          <form className='flex' style={{ flexDirection: 'row' }}>
+          <form className='form-2 flex' style={{ flexDirection: 'row' }}>
             <div className='box'>
               <span>City/Street</span>
               <input type='text' placeholder='Location' />

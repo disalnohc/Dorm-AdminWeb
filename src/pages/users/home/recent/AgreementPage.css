@@ -1,0 +1,32 @@
+/* AgreementPage.css */
+.agreement-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    height: 80vh;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 20px; 
+  }
+  
+  .title-agp {
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .section-title {
+    font-size: 20px;
+    margin-top: 20px;
+  }
+  
+  .content-agp {
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center; 
+  }
+
+  
+  
