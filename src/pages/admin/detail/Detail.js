@@ -62,7 +62,7 @@ const Detail = () => {
             const room = docSnapshot.id;
             const owner = docSnapshot.data().owner;
   
-            if (owner !== "") {
+            if (owner !== null) {
               const collRef = firestore.collection("profiles").doc(owner);
               const doc = await collRef.get();
   

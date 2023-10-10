@@ -92,14 +92,15 @@ const DataTableAC = (props) => {
 
   const handleAddRoom = async () => {
     const NewRoomData = {
-      owner: "",
+      owner: null,
       electric: "0",
       electricCurrent: "0",
       waterCurrent: "0",
       water: "0",
-      img: "",
-      datein: "",
-      dateout: "",
+      img: null,
+      datein: null,
+      dateout: null,
+      type: null,
       status: document.getElementById("Status").value,
     }
     try {
@@ -202,16 +203,16 @@ const DataTableAC = (props) => {
           </Modal.Header>
           <Modal.Body>
             <Form>
-              <Form.Group>
-                <Form.Label>Room Number</Form.Label>
+              <Form.Group className="d-flex flex-row align-items-center">
+              <Form.Label htmlFor="title" style={{ whiteSpace: "nowrap" }}>Room Number</Form.Label>
                 <Form.Control
                   type="text"
                   name="title"
                   id="title"
                 />
               </Form.Group>
-              <Form.Group>
-                <Form.Label>Status Room</Form.Label>
+              <Form.Group className="d-flex flex-row align-items-center">
+              <Form.Label htmlFor="title" style={{ whiteSpace: "nowrap" }}>Status Room</Form.Label>
                 <Form.Control as="select" name="Status" id="Status">
                   <option value="Vacant">Vacant</option>
                   <option value="Occupied">Occupied</option>

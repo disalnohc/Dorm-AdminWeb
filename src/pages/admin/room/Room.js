@@ -17,6 +17,12 @@ const columns = [
     headerName: "สถานะ",
     width: 400,
   },
+  {
+    field: "typeRoom",
+    type: "string",
+    headerName: "ชนิดห้องพัก",
+    width: 400,
+  },
 ];
 
 const Room = () => {
@@ -36,6 +42,7 @@ const Room = () => {
         id: index + 1, 
         roomNumber: doc.id,
         status: doc.data().status,
+        typeRoom: doc.data().type
       }));
       setRoomData(data);
     } catch (error) {
