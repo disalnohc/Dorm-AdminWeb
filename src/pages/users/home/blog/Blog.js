@@ -1,9 +1,6 @@
 import React from "react";
-import Back from "../common/Back";
-import img from "../images/services.jpg";
-import BlogCard from "./BlogCard";
-import Bolg from "../images/about.jpg";
-import "./blog.css";
+import BlogCard from "../../blog/BlogCard";
+import Bolg from "../../images/about.jpg"
 
 const Blog = () => {
 
@@ -31,9 +28,8 @@ const Blog = () => {
   return (
     <>
       <section className="blog-out mb">
-        <Back name="Blog" title="Blog Grid - Our Blogs" cover={img} />
-        <div className="container-blog">
-          <h1>Board & News</h1>
+        <div className="container recent" style={{ display: "flex", width: "1200px", flexDirection: "column", alignItems: "center", gap: "52px" }}>
+          <h4>Board & News</h4>
           <p>It is a long established fact that a reader will be distracted by the of readable content of a page when lookings at its layouts the points of using.</p>
           <div className="row">
             {blogs.map((blog, index) => (

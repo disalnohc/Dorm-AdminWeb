@@ -51,8 +51,8 @@ const Security = () => {
   
     return (
       <div>
-        <div className="info">
-          <h1>รักษาความปลอดภัย</h1>
+        <div className="header-content">
+          <h2>รักษาความปลอดภัย</h2>
         </div>
         <DataTable slug="products" columns={columns} rows={rooms} />
         {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

@@ -56,7 +56,7 @@ const Detail = () => {
         const collRef = firestore.collection("rooms");
         const querySnapshot = await collRef.get();
         const memberDataArray = [];
-  
+
         await Promise.all(
           querySnapshot.docs.map(async (docSnapshot) => {
             const room = docSnapshot.id;
@@ -65,7 +65,7 @@ const Detail = () => {
             if (owner !== null) {
               const collRef = firestore.collection("profiles").doc(owner);
               const doc = await collRef.get();
-  
+
               if (doc.exists) {
                 const data = {
                   id: memberDataArray.length + 1,
@@ -75,27 +75,27 @@ const Detail = () => {
                   email: doc.data().email,
                   phoneNumber: doc.data().phone,
                 };
-  
+
                 memberDataArray.push(data);
               }
             }
           })
         );
-  
+
         setMemberData(memberDataArray);
       };
-  
+
       fetchOwnerData();
     } catch (error) {
       console.log("error fetching owner data: ", error);
     }
   }, []);
-  
+
 
   return (
     <div>
-      <div className="info">
-        <h1>รายละเอียดผู้เช่า</h1>
+      <div className="header-content">
+        <h2>รายละเอียดผู้เช่า</h2>
       </div>
       <DataTableAC slug="products" columns={columns} rows={memberData} />
       {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

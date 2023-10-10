@@ -20,7 +20,7 @@ const SignInForm = ({ onLogin }) => {
 
   return (
     <div className="form-container-2 sign-in-container-2">
-      <form>
+      <form className='form-2'>
         <h1>Sign in</h1>
         <input
           type="text"

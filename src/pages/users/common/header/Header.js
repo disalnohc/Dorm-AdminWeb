@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./header.css";
-import logo from "../../../../logo.svg";
+import { useNavigate } from "react-router-dom";
+import styles from './Navbar.module.css';
 import { auth } from "../../../../firebase";
+import logo from "../../../../logo.svg";
 
 const Header = ({ setIsAuthenticated, setIsAdmin }) => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Header = ({ setIsAuthenticated, setIsAdmin }) => {
   }, []);
 
   const handleSignUpClick = () => {
-    navigate("/user/regsiter");
+    navigate("/user/login");
   };
 
   const handleLogoutClick = async () => {
@@ -40,73 +40,95 @@ const Header = ({ setIsAuthenticated, setIsAdmin }) => {
       });
   };
 
+  // adding the states 
+  const [isActive, setIsActive] = useState(false);
+
+  //add the active class
+  const toggleActiveClass = () => {
+    setIsActive(!isActive);
+  };
+
+  //clean up function to remove the active class
+  const removeActive = () => {
+    setIsActive(false)
+  }
+
   return (
-    <header>
-      <div className="container flex">
-        <div className="logo">
-          <Link to="/" className="menu-bars logo-content">
-            <img src={logo} alt="" />
-            <p className="example-text">Dorm</p>
-          </Link>
-        </div>
+    <div className="App">
+      <header className="App-header">
 
-        <div className="nav flex">
-          <Link to="/" className="menu-bars">
-            <p className="example-text">Home</p>
-          </Link>
-          <Link to="/user/about" className="menu-bars">
-            <p className="example-text">About</p>
-          </Link>
-          {isLoggedIn && (
-            <Link to="/user/booking" className="menu-bars">
-              <p className="example-text">Book a room</p>
-            </Link>
-          )}
-          <Link to="/user/review" className="menu-bars">
-            <p className="example-text">Review</p>
-          </Link>
-          {isLoggedIn && (
-            <Link to="/user/service" className="menu-bars">
-              <p className="example-text">Service</p>
-            </Link>
-          )}
-          {isLoggedIn && (
-            <Link to="/user/cost" className="menu-bars">
-              <p className="example-text">cost of utilities</p>
-            </Link>
-          )}
-          <Link to="/user/blog" className="menu-bars">
-            <p className="example-text">Blog</p>
-          </Link>
-          <Link to="/user/contact" className="menu-bars">
-            <p className="example-text">Contact</p>
-          </Link>
-        </div>
+        <nav className={`${styles.navbar}`}>
 
-        <div className="button flex">
-          {isLoggedIn ? (
-            <>
-              <Link to="/user/profile">
-                <h4>Profile</h4>
-              </Link>
-              <button className="btn1" onClick={handleLogoutClick}>
-                <i className="fa fa-sign-out"></i> Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/user/login">
-                <h4>Login</h4>
-              </Link>
-              <button className="btn1" onClick={handleSignUpClick}>
-                <i className="fa fa-sign-out"></i> Sign Up
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    </header>
+          {/* logo */}
+          <div className={styles.newLogoClass}>
+            <div style={{ display: 'flex', alignItems: 'center', marginLeft: "10vh" }}>
+              <img src={logo} alt="" style={{ width: "60px", height: "60px" }} />
+              <a href='/user/home' className={`${styles.logo}`}>Dorm</a>
+            </div>
+          </div>
+
+          <ul className={`${styles.navMenu} ${isActive ? styles.active : ''}`}>
+            <li onClick={removeActive}>
+              <a href='/user/home' className={`${styles.navLink}`}>Home</a>
+            </li>
+            <li onClick={removeActive}>
+              <a href='/user/about' className={`${styles.navLink}`}>About</a>
+            </li>
+            {isLoggedIn && (
+              <li onClick={removeActive}>
+                <a href='/user/booking' className={`${styles.navLink}`}>Book a room</a>
+              </li>
+            )}
+            <li onClick={removeActive}>
+              <a href='/user/review' className={`${styles.navLink}`}>Review</a>
+            </li>
+            {isLoggedIn && (
+              <li onClick={removeActive}>
+                <a href='/user/service' className={`${styles.navLink}`}>Service</a>
+              </li>
+            )}
+            {isLoggedIn && (
+              <li onClick={removeActive}>
+                <a href='/user/cost' className={`${styles.navLink}`}>Cost of utilities</a>
+              </li>
+            )}
+            <li onClick={removeActive}>
+              <a href='/user/blog' className={`${styles.navLink}`}>Blog</a>
+            </li>
+            <li onClick={removeActive}>
+              <a href='/user/contact' className={`${styles.navLink}`}>Contact</a>
+            </li>
+            {isLoggedIn ? (
+              <>
+                <li onClick={removeActive}>
+                  <a href='/user/profile' className={`${styles.navLink}`}>Profile</a>
+                </li>
+                <button onClick={handleLogoutClick} className="btn-nav">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <li onClick={removeActive}>
+                  <a href='/user/login' className={`${styles.navLink}`}>login</a>
+                </li>
+                <button onClick={handleSignUpClick} className="btn-nav">
+                  Sign Up
+                </button>
+              </>
+            )}
+          </ul>
+
+          <div className={`${styles.hamburger} ${isActive ? styles.active : ''}`} onClick={toggleActiveClass}>
+            <span className={`${styles.bar}`}></span>
+            <span className={`${styles.bar}`}></span>
+            <span className={`${styles.bar}`}></span>
+          </div>
+        </nav>
+
+      </header>
+    </div>
   );
-};
+}
 
 export default Header;

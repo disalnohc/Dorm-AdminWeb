@@ -81,8 +81,8 @@ const Detail = () => {
 
   return (
     <div>
-      <div className="info">
-        <h1>{displayDateFormatted}</h1>
+      <div className="header-content">
+        <h2>{displayDateFormatted}</h2>
       </div>
       <DataTableAC slug="products" columns={columns} rows={electricData} />
       {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

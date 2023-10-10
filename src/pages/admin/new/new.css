@@ -2,12 +2,8 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-}
-.card {
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    max-height: 400px - 500px;
+    overflow: scroll;
+    margin-bottom: 50px;
 }
 .add-button {
     margin-top: 20px;

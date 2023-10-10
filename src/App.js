@@ -26,13 +26,17 @@ import Profile from './pages/admin/profile/Profile'
 
 //user
 import Header from './pages/users/common/header/Header';
-import Foonter from './pages/users/common/footer/Footer';
+//import Foonter from './pages/users/common/footer/Footer';
 import HomePage from './pages/users/home/Home';
 import About from './pages/users/about/About';
 import Blog from './pages/users/blog/Blog';
 import Contact from './pages/users/contact/Contact';
 import Review from './pages/users/review/Review';
-
+import Booking from './pages/users/booking/Booking';
+import Service from './pages/users/service/Service';
+import RoomDetail from './pages/users/home/recent/RoomDetail';
+import AgreementPage from './pages/users/home/recent/AgreementPage';
+import BillPayment from './pages/users/home/recent/BillPayment';
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -141,6 +145,11 @@ const App = () => {
                   <Route path="/user/contact" element={<Contact />} />
                   <Route path="/user/review" element={<Review />} />
                   <Route path="/user/blog" element={<Blog />} />
+                  <Route path="/user/booking" element={<Booking />} />
+                  <Route path="/user/service" element={<Service />} />
+                  <Route path="/user/roomdetail" element={<RoomDetail />} />
+                  <Route path="/user/agreement" element={<AgreementPage/>} />
+                  <Route path="/user/billpayment" element={<BillPayment/>} />
                 </>
               </Routes>
             </Box>
@@ -193,9 +202,9 @@ const App = () => {
               <Route path="/user/about" element={<About />} />
               <Route path="/user/contact" element={<Contact />} />
               <Route path="/user/review" element={<Review />} />
-              <Route path="/user/blog" element={<Blog />} />
-              <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
+              <Route path="/user/blog" element={<Blog />} /> 
               <Route path="/user/regsiter" element={<RegisterForm />} />
+              <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
             </>
           </Routes>
         </Box>

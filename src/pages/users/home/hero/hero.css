@@ -1,11 +1,14 @@
 .hero {
-  background-image: url("../../images/banner.png");
+  background-image: url("../../images/Photo.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 90vh;
   width: 100%;
+  border-radius: 0px 0px 0px 291px; 
+  background-color: #FFF; 
 }
+
 .hero .container {
   padding-top: 15%;
 }
@@ -17,20 +20,20 @@
   color: #fff;
   opacity: 0.8;
 }
-form {
+.form-2 {
   background-color: #fff;
   border-radius: 5px;
   margin-top: 50px;
   padding: 0 20px;
 }
-form input {
+.form-2 input {
   padding: 10px;
   width: 100%;
   border: 1px solid rgba(128, 128, 128, 0.2);
   margin-top: 5px;
   border-radius: 5px;
 }
-form span {
+.form-2 span {
   font-size: 14px;
   color: grey;
 }
@@ -38,14 +41,14 @@ input::placeholder {
   font-size: 17px;
   color: black;
 }
-form .box {
+.form-2 .box {
   padding: 15px;
   border-left: 1px solid rgba(128, 128, 128, 0.2);
 }
-form .box:nth-child(1) {
+.form-2 .box:nth-child(1) {
   border-left: none;
 }
-form h4 {
+.form-2 h4 {
   font-weight: 500;
 }
 text {
@@ -57,14 +60,14 @@ text {
   .hero .container {
     padding-top: 30%;
   }
-  form {
+  .form-2 {
     display: flex;
     flex-wrap: wrap;
   }
-  form .box {
+  .form-2 .box {
     border-left: none;
   }
-  form input {
+  .form-2 input {
     width: 100%;
   }
 }
@@ -75,4 +78,22 @@ text {
 
 .box {
   margin-right: 20px; 
+}
+.flex-container {
+  display: flex;
+  width: 687px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.flex-container p {
+  margin: 0;
+  font-size: 60px;
+  color: #292F36;
+}
+.ip {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #292F36;
 }

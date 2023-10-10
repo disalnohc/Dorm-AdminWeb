@@ -58,7 +58,7 @@ function SignUpForm() {
 
   return (
     <div className="form-container-2 sign-up-container-2">
-      <form onSubmit={handleOnSubmit}>
+      <form onSubmit={handleOnSubmit} className='form-2'>
         <h1>Create Account</h1>
         <input
           type="text"

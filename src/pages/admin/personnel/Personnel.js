@@ -8,11 +8,9 @@ function Personnel() {
         <div>
             <div className="main-content">
                 <div className="content-header">
-                    <header className="header">
-                        <div className="header-content">
-                            <h2>บุคลากร</h2>
-                        </div>
-                    </header>
+                    <div className="header-content">
+                        <h2>บุคลากร</h2>
+                    </div>
                     <div className="row">
                         <div className="col-md-4">
                             <div className="card custom-card-style">

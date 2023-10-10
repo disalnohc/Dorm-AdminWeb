@@ -35,9 +35,9 @@ export default function LoginForm({ onLogin }) {
               </div>
             <div className="overlay-panel-2 overlay-right-2">
               <h1>Hello, Friend!</h1>
-              <p>Enter your personal details and start journey with us</p>
+              <p className="pp">Enter your personal details and start journey with us</p>
               <button
-                className="ghost "
+                className="ghost"
                 id="signUp"
                 onClick={() => handleOnClick("signUp")}
               >

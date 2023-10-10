@@ -1,9 +1,16 @@
+
 .contact form div {
   display: flex;
 }
-.contact textarea {
+.contact {
   border: 1px solid rgba(0, 0, 0, 0.1);
   width: 100%;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+textarea {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 121vh;
   border-radius: 5px;
   margin-bottom: 20px;
 }
@@ -13,6 +20,32 @@
 }
 .contact form {
   padding: 30px;
+}
+.input {
+  width: 60vh;
+}
+.inputSU {
+  width:  121vh;
+}
+.container-contact {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 50px;
+  margin-bottom: 20px;
+}
+
+.container-contact h1 {
+  font-size: 30px; 
+  color: #333;
+}
+
+.container-contact p {
+  font-size: 16px; 
+  line-height: 1.5; 
+  color: #666; 
 }
 @media screen and (max-width: 768px) {
   .contact h4 {

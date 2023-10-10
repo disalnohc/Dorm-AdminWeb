@@ -54,6 +54,8 @@ const Profile = () => {
     }
 
     return (
+        <div className="header-content">
+            <h2>Profile</h2>
         <div className="container-fluid mt-5 profile-container align-items-center">
             <div className="row justify-content-center">
                 <div className="col-md-4 mx-auto">
@@ -87,7 +89,7 @@ const Profile = () => {
                     <Button onClick={handleModalClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
-
+        </div>
         </div>
     );
 };

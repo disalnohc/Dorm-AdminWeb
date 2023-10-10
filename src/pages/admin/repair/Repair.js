@@ -51,8 +51,8 @@ const Repair = () => {
   
     return (
       <div>
-        <div className="info">
-          <h1>เเจ้งซ่อม</h1>
+        <div className="header-content">
+          <h2>เเจ้งซ่อม</h2>
         </div>
         <DataTable slug="products" columns={columns} rows={rooms} />
         {open && <Add slug="product" columns={columns} setOpen={setOpen} />}

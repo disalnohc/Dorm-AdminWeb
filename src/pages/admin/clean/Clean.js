@@ -51,9 +51,9 @@ const Clean = () => {
   
     return (
       <div>
-        <div className="info">
-          <h1>ทำความสะอาด</h1>
-        </div>
+          <div className="header-content">
+            <h2>ทำความสะอาด</h2>
+          </div>
         <DataTable slug="products" columns={columns} rows={rooms} />
         {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
       </div>
