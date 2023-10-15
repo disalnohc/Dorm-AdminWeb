@@ -47,16 +47,13 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [getRole, setGetRole] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setIsAuthenticated(true);
-        setIsLoading(true);
         const user = authUser.uid;
-        console.log(user);
         const docRef = firestore.collection('profiles').doc(user);
 
         docRef.get()
@@ -67,24 +64,23 @@ const App = () => {
               if (role === 'admin') {
                 setIsAdmin(true);
                 setGetRole(true);
-                setIsLoading(false);
               } else {
                 setIsAdmin(false);
                 setGetRole(true);
-                setIsLoading(false);
               }
             } else {
               console.log("ไม่พบเอกสารสำหรับผู้ใช้นี้");
+              setIsAuthenticated(false);
             }
           })
           .catch((error) => {
             console.log("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+            setIsAuthenticated(false);
           });
       } else {
         setIsAdmin(false);
         setIsAuthenticated(false);
         setGetRole(false);
-        setIsLoading(false);
       }
     });
 
@@ -93,9 +89,29 @@ const App = () => {
     };
   }, []);
 
+  function loading_display() {
+    return (
+      <>
+        <div className="app" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <>
+            <CssBaseline />
+            <TailSpin
+              height="160"
+              width="160"
+              color="orange"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </>
+        </div>
+      </>
+    )
+  }
 
   function admin_menu() {
-    console.log('admin_menu');
     return (
       <>
         <SideBar />
@@ -130,7 +146,6 @@ const App = () => {
   }
 
   function user_menu() {
-    console.log('user_menu');
     return (
       <>
         <main className="content">
@@ -148,8 +163,8 @@ const App = () => {
                   <Route path="/user/booking" element={<Booking />} />
                   <Route path="/user/service" element={<Service />} />
                   <Route path="/user/roomdetail" element={<RoomDetail />} />
-                  <Route path="/user/agreement" element={<AgreementPage/>} />
-                  <Route path="/user/billpayment" element={<BillPayment/>} />
+                  <Route path="/user/agreement" element={<AgreementPage />} />
+                  <Route path="/user/billpayment" element={<BillPayment />} />
                 </>
               </Routes>
             </Box>
@@ -158,10 +173,36 @@ const App = () => {
       </>
     );
   }
-  
+
+  function guest_menu() {
+    return (
+      <>
+        <main className="content">
+          <Header />
+          <div className="content_user">
+            <Box>
+              <Routes>
+                <>
+                  <Route path="/" element={<Navigate to="/user/home" />} />
+                  <Route path="/user/home" element={<HomePage />} />
+                  <Route path="/user/about" element={<About />} />
+                  <Route path="/user/contact" element={<Contact />} />
+                  <Route path="/user/review" element={<Review />} />
+                  <Route path="/user/blog" element={<Blog />} />
+                  <Route path="/user/regsiter" element={<RegisterForm />} />
+                  <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
+                </>
+              </Routes>
+            </Box>
+          </div>
+        </main>
+      </>
+    )
+  }
+
 
   if (isAuthenticated === true) {
-    if (isLoading === false && getRole === true) {
+    if (getRole === true) {
       return (
         <div className="app">
           <>
@@ -169,49 +210,18 @@ const App = () => {
             {isAdmin ? admin_menu() : user_menu()}
           </>
         </div>
-      );
+      )
     } else {
       return (
-        <div className="app" style={{display : 'flex' , justifyContent : 'center' , alignItems : 'center'}}>
-          <>
-            <CssBaseline />
-            <TailSpin
-              height="160"
-              width="160"
-              color="orange"
-              ariaLabel="tail-spin-loading"
-              radius="1"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-            />
-          </>
-        </div>
-      );
+        loading_display()
+      )
     }
   } else {
     return (
-      <main className="content">
-      <Header setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
-      <div className="content_user">
-        <Box>
-          <Routes>
-            <>
-              <Route path="/" element={<Navigate to="/user/home" />} />
-              <Route path="/user/home" element={<HomePage />} />
-              <Route path="/user/about" element={<About />} />
-              <Route path="/user/contact" element={<Contact />} />
-              <Route path="/user/review" element={<Review />} />
-              <Route path="/user/blog" element={<Blog />} /> 
-              <Route path="/user/regsiter" element={<RegisterForm />} />
-              <Route path="/user/login" element={<LoginForm onLogin={() => setIsAuthenticated(true)} />} />
-            </>
-          </Routes>
-        </Box>
-      </div>
-    </main>
+      guest_menu()
     )
   }
 
 };
 export default App;
+

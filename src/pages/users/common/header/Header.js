@@ -8,7 +8,7 @@ const Header = ({ setIsAuthenticated, setIsAdmin }) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { //<--- this useEffect is creact loading when change view in navigate
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setIsLoggedIn(true);

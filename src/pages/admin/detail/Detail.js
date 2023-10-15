@@ -13,8 +13,8 @@ const columns = [
     renderCell: (params) => {
       return (
         <img
-          src={params.row.img ? `https://firebasestorage.googleapis.com/v0/b/hopak-8af20.appspot.com/o/profiles_image%2F${params.row.img}.jpg?alt=media` : "/noavatar.png"}
-          alt=""
+          src={params.row.img ? `https://firebasestorage.googleapis.com/v0/b/hopak-8af20.appspot.com/o/profiles_image%2F${params.row.img}.jpg?alt=media` : "https://img.freepik.com/premium-vector/business-global-economy_24877-41082.jpg"}
+          alt="profiileAvatar"
           style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         />
       );
@@ -65,7 +65,7 @@ const Detail = () => {
             if (owner !== null) {
               const collRef = firestore.collection("profiles").doc(owner);
               const doc = await collRef.get();
-
+              
               if (doc.exists) {
                 const data = {
                   id: memberDataArray.length + 1,

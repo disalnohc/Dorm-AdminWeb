@@ -70,7 +70,7 @@ function SignUpForm() {
         <input
           type="tel"
           name="number"
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          pattern="[0-9]{10}"
           value={state.number}
           onChange={handleChange}
           placeholder="Phone Number"

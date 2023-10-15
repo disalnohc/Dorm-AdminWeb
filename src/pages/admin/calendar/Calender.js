@@ -17,21 +17,29 @@ const Calender = () => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleSaveEvent = async () => {
+
+    const startTime = document.querySelector("#title").value;
+    const endTime = document.querySelector("#text").value;
+
     try {
       const newEvent = {
         startTimeEvent: document.querySelector("#starttime").value,
         endTimeEvent: document.querySelector("#endtime").value,
-        title: document.querySelector("#title").value,
-        text: document.querySelector("#text").value
+        title: startTime,
+        text: endTime
       }
-      const docRef = firestore.collection('Apartment').doc('Event').collection('EventData');
+
+      if(startTime>=endTime){
+        alert("วันที่สิ้นสุดต้องอยู่หลังวันที่เริ่มต้น");
+      } else {
+        const docRef = firestore.collection('Apartment').doc('Event').collection('EventData');
       const addedDoc = await docRef.add(newEvent);
 
       if (addedDoc) {
         alert('เพิ่มข้อมูลสำเร็จ');
         handleModalClose();
       }
-
+      }
     } catch (error) {
       console.log("Error add event : ", error);
     }
@@ -61,6 +69,7 @@ const Calender = () => {
 
       collRef.onSnapshot((querySnap) => {
         const newEvent = querySnap.docs.map(doc => ({
+          id: doc.id,
           title: doc.data().title,
           text: doc.data().text,
           startTimeEvent: new Date(doc.data().startTimeEvent),
@@ -80,16 +89,25 @@ const Calender = () => {
 
   const handleUpdate = () => {
     try {
+
+      const updateStartTime = new Date(selectedEvent.startTimeEvent).toISOString();
+      const updateEndTime = new Date(selectedEvent.endTimeEvent).toISOString()
+
       const newUpdate = {
-        title: document.querySelector("#updateEventTitle").value,
-        text: document.querySelector("#updateEventText").value,
-        startTimeEvent: document.querySelector("#updateEventStartTime").value,
-        endTimeEvent: document.querySelector("#updateEventEndTime").value
+        title: selectedEvent.title,
+        text: selectedEvent.text,
+        startTimeEvent: updateStartTime,
+        endTimeEvent: updateEndTime
       }
-      const docRef = firestore.collection('Apartment').doc('Event').collection('EventData').doc(selectedEvent.id);
+
+      if(updateStartTime>=updateEndTime){
+        alert("วันที่สิ้นสุดต้องอยู่หลังวันที่เริ่มต้น");
+      } else {
+        const docRef = firestore.collection('Apartment').doc('Event').collection('EventData').doc(selectedEvent.id);
       if (docRef.update(newUpdate)) {
         alert('อัพเดทเรียบร้อย');
         setIsEditMode(false);
+      }
       }
     } catch (error) {
       console.log('Error update data : ', error)
@@ -98,6 +116,7 @@ const Calender = () => {
 
   const handleDeleteEvent = () => {
     try {
+      console.log(selectedEvent.id)
       const docRef = firestore.collection('Apartment').doc('Event').collection('EventData').doc(selectedEvent.id);
       if (docRef.delete()) {
         alert('ลบกิจกรรมเรียบร้อย');
@@ -164,21 +183,21 @@ const Calender = () => {
                     <p>วันเริ่มต้น</p>
                     <input
                       type='datetime-local'
-                      value={selectedEvent.startTimeEvent}
+                      value={selectedEvent.startTimeEvent ? moment(selectedEvent.startTimeEvent).format('YYYY-MM-DDTHH:mm') : ''}
                       id='updateEventStartTime'
                       onChange={(e) => {
-                        const newStartTime = e.target.value;
+                        const newStartTime = moment(e.target.value, 'YYYY-MM-DDTHH:mm').toDate();
                         setSelectedEvent((prevEvent) => ({ ...prevEvent, startTimeEvent: newStartTime }));
                       }}
                     />
                     <p>วันสิ้นสุด</p>
                     <input
                       type='datetime-local'
-                      value={selectedEvent.endTimeEvent}
-                      id='updateEventEndTime'
+                      value={selectedEvent.endTimeEvent ? moment(selectedEvent.endTimeEvent).format('YYYY-MM-DDTHH:mm') : ''}
+                      id='updateEventStartTime'
                       onChange={(e) => {
-                        const newEndTime = e.target.value;
-                        setSelectedEvent((prevEvent) => ({ ...prevEvent, endTimeEvent: newEndTime }));
+                        const newStartTime = moment(e.target.value, 'YYYY-MM-DDTHH:mm').toDate();
+                        setSelectedEvent((prevEvent) => ({ ...prevEvent, endTimeEvent: newStartTime }));
                       }}
                     />
                   </div>

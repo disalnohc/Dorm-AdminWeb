@@ -40,7 +40,7 @@ const DataTableAC = (props) => {
   const handleFetchDataRoom = async (status,roomNumber) => {
     try {
       console.log(roomNumber);
-      const DocRef = await firestore.collection('rooms').doc(roomNumber);
+      const DocRef = firestore.collection('rooms').doc(roomNumber);
       DocRef.get().then((doc) => {
         setRoomData(doc.data());
 
