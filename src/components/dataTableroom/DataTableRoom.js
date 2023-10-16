@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DataGrid,
   GridToolbar,
@@ -28,13 +28,15 @@ const DataTableRoom = (props) => {
   const [showSmallModal, setShowSmallModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roomId, setRoomId] = useState('');
-  const [roomData, setRoomData] = useState([]);
-  const [UserData, setUserData] = useState([]);
-  const [showOccupied, setShowOccupied] = useState(false);
-  const [showAssign, setShowAssign] = useState(false);
-  const [showSlipImg, setShowSlipImg] = useState('');
-  const [smallModalTitle, setSmallModalTitle] = useState(null);
-  const [smallModalDetail, setSmallModalDetail] = useState(null);
+  const [roomData , setRoomData] = useState([]);
+  const [UserData , setUserData] = useState([]);
+  const [showOccupied , setShowOccupied] = useState(false);
+  const [showAssign , setShowAssign] = useState(false);
+  const [showSlipImg , setShowSlipImg ] = useState('');
+  const [smallModalTitle , setSmallModalTitle] = useState(null);
+  const [smallModalDetail , setSmallModalDetail] = useState(null);
+  const [documents , setDocument ] = useState([]);
+  const [selectoption , setSelectOption] = useState(null);
 
   const handleFetchDataRoom = async (status, roomNumber) => {
     try {
@@ -43,13 +45,12 @@ const DataTableRoom = (props) => {
       DocRef.get().then((doc) => {
         setRoomData(doc.data());
 
-        if (status === 'Assign') {
-          const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
-          ImgRef.getDownloadURL().then((url) => {
-            setShowSlipImg(url);
-          })
-        }
-        if (doc.exists) {
+        if(status === 'Assign'){
+        const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
+        ImgRef.getDownloadURL().then((url) => {
+          setShowSlipImg(url);
+        })}
+        if(doc.exists){
           firestore.collection('profiles').doc(doc.data().owner).get().then((doc) => {
             if (doc.exists) {
               setUserData(doc.data());
@@ -71,6 +72,17 @@ const DataTableRoom = (props) => {
       console.log('error fetch data : ', error);
     }
   }
+
+  useEffect(() => {
+    const fetchDataType = async () => {
+      const collectionRef = firestore.collection('typerooms');
+      const querySnapshot = await collectionRef.get();
+      const documentIds = querySnapshot.docs.map((doc) => doc.id);
+      setDocument(documentIds);
+    }
+  
+    fetchDataType();
+  }, []);
 
   const handleDelete = async () => {
     try {
@@ -101,12 +113,11 @@ const DataTableRoom = (props) => {
       img: null,
       datein: null,
       dateout: null,
-      type: null,
+      type: document.getElementById("TypeRooms").value,
       status: document.getElementById("Status").value,
     }
     try {
       const RoomID = document.getElementById("title").value;
-
       await firestore.collection('rooms').doc(RoomID).set(NewRoomData);
       console.log('add new room success');
       setShowModal(false);
@@ -129,6 +140,7 @@ const DataTableRoom = (props) => {
     setShowDeleteModal(false);
     setShowAssign(false);
     setShowOccupied(false);
+    setSelectOption(null);
   };
 
   const handleShow = () => {
@@ -161,13 +173,13 @@ const DataTableRoom = (props) => {
 
   const handleVacant = async () => {
     try {
-      await firestore.collection('rooms').doc(roomId).update({
-        status: 'Vacant',
-        datein: '',
-        dateout: '',
-        img: '',
-        owner: '',
-      }).then(() => {
+      await firestore.collection('rooms').doc(roomId).update({ 
+        status : 'Vacant',
+        datein : null,
+        dateout : null,
+        img : null,
+        owner : null,
+       }).then(() =>{
         console.log('Update Success');
         handleClose();
         fetchDataRoom();
@@ -219,6 +231,16 @@ const DataTableRoom = (props) => {
                   <option value="Vacant">Vacant</option>
                   <option value="Occupied">Occupied</option>
                   <option value="Assign">Assign</option>
+                </Form.Control>
+              </Form.Group>
+              <Form.Group className="d-flex flex-row align-items-center">
+              <Form.Label htmlFor="title" style={{ whiteSpace: "nowrap" }}>Type Room</Form.Label>
+                <Form.Control as="select" name="TypeRooms" id="TypeRooms" value={selectoption}>
+                  {documents.map((documentId) => (
+                    <option key={documentId} value={documentId}>
+                      {documentId}
+                    </option>
+                  ))}
                 </Form.Control>
               </Form.Group>
             </Form>

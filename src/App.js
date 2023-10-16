@@ -165,6 +165,7 @@ const App = () => {
                   <Route path="/user/roomdetail" element={<RoomDetail />} />
                   <Route path="/user/billpayment" element={<BillPayment/>} />
                   <Route path="/user/cost" element={<CostPage />} /> 
+                  <Route path='/user/profile' element={<Profile />} />
                 </>
               </Routes>
             </Box>
