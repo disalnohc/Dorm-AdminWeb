@@ -18,6 +18,7 @@ const RecentCard = () => {
         const InfoRoom = [];
         setLoading(true);
 
+
         await Promise.all(
           querySnapshot.docs.map(async (docs) => {
             const id = docs.id;
@@ -89,7 +90,6 @@ const RecentCard = () => {
                   <p>
                     <FontAwesomeIcon icon={faMapMarkerAlt} />  {data.roomLocation}
                   </p>
-
                 </div>
                 <div className='button flex'>
                   <div>

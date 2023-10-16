@@ -194,10 +194,10 @@ const Calender = () => {
                     <p className='modal-title'>วันเริ่มต้น</p>
                     <input
                       type='datetime-local'
-                      value={selectedEvent.startTimeEvent}
+                      value={selectedEvent.startTimeEvent ? moment(selectedEvent.startTimeEvent).format('YYYY-MM-DDTHH:mm') : ''}
                       id='updateEventStartTime'
                       onChange={(e) => {
-                        const newStartTime = e.target.value;
+                        const newStartTime = moment(e.target.value, 'YYYY-MM-DDTHH:mm').toDate();
                         setSelectedEvent((prevEvent) => ({ ...prevEvent, startTimeEvent: newStartTime }));
                       }}
                       className='modal-input'
@@ -205,11 +205,11 @@ const Calender = () => {
                     <p className='modal-title'>วันสิ้นสุด</p>
                     <input
                       type='datetime-local'
-                      value={selectedEvent.endTimeEvent}
-                      id='updateEventEndTime'
+                      value={selectedEvent.endTimeEvent ? moment(selectedEvent.endTimeEvent).format('YYYY-MM-DDTHH:mm') : ''}
+                      id='updateEventStartTime'
                       onChange={(e) => {
-                        const newEndTime = e.target.value;
-                        setSelectedEvent((prevEvent) => ({ ...prevEvent, endTimeEvent: newEndTime }));
+                        const newStartTime = moment(e.target.value, 'YYYY-MM-DDTHH:mm').toDate();
+                        setSelectedEvent((prevEvent) => ({ ...prevEvent, endTimeEvent: newStartTime }));
                       }}
                       className='modal-input'
                     />
