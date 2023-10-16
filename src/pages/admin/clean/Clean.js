@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import "./clean.css";
+import React from "react";
 import DataTable from "../../../components/dataTable/DataTable";
-import Add from "../../../components/add/Add";
 import { rooms  } from "../../../data.ts";
 
 const columns = [
@@ -47,15 +45,13 @@ const columns = [
 ];
 
 const Clean = () => {
-    const [open, setOpen] = useState(false);
   
     return (
       <div>
           <div className="header-content">
             <h2>ทำความสะอาด</h2>
           </div>
-        <DataTable slug="products" columns={columns} rows={rooms} />
-        {open && <Add slug="product" columns={columns} setOpen={setOpen} />}
+        <DataTable columns={columns} rows={rooms} />
       </div>
     );
   };

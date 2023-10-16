@@ -1,5 +1,4 @@
 import React from "react";
-import Review from "../images/pricing.jpg";
 
 const ReviewCard = ({ review }) => {
   return (

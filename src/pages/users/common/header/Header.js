@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styles from './Navbar.module.css';
 import { auth } from "../../../../firebase";
 import logo from "../../../../logo.svg";
+import { Link } from "react-router-dom";
 
 const Header = ({ setIsAuthenticated, setIsAdmin }) => {
   const navigate = useNavigate();
@@ -63,56 +64,79 @@ const Header = ({ setIsAuthenticated, setIsAdmin }) => {
           <div className={styles.newLogoClass}>
             <div style={{ display: 'flex', alignItems: 'center', marginLeft: "10vh" }}>
               <img src={logo} alt="" style={{ width: "60px", height: "60px" }} />
-              <a href='/user/home' className={`${styles.logo}`}>Dorm</a>
+              <Link to="/user/home" className="menu-bars">
+                <a className={`${styles.logo}`}>Dorm</a>
+              </Link>
             </div>
           </div>
 
           <ul className={`${styles.navMenu} ${isActive ? styles.active : ''}`}>
             <li onClick={removeActive}>
-              <a href='/user/home' className={`${styles.navLink}`}>Home</a>
+              <Link to="/user/home" >
+                <a className={`${styles.navLink}`}>Home</a>
+              </Link>
             </li>
             <li onClick={removeActive}>
-              <a href='/user/about' className={`${styles.navLink}`}>About</a>
+              <Link to="/user/about" >
+                <a className={`${styles.navLink}`}>About</a>
+              </Link>
             </li>
+
             {isLoggedIn && (
               <li onClick={removeActive}>
-                <a href='/user/booking' className={`${styles.navLink}`}>Book a room</a>
+                <Link to="/user/booking" >
+                  <a className={`${styles.navLink}`}>Book a room</a>
+                </Link>
               </li>
             )}
             <li onClick={removeActive}>
-              <a href='/user/review' className={`${styles.navLink}`}>Review</a>
+              <Link to="/user/review" >
+                <a className={`${styles.navLink}`}>Review</a>
+              </Link>
             </li>
             {isLoggedIn && (
               <li onClick={removeActive}>
-                <a href='/user/service' className={`${styles.navLink}`}>Service</a>
+                <Link to="/user/service" >
+                  <a className={`${styles.navLink}`}>Service</a>
+                </Link>
               </li>
             )}
             {isLoggedIn && (
               <li onClick={removeActive}>
-                <a href='/user/cost' className={`${styles.navLink}`}>Cost of utilities</a>
+                <Link to="/user/cost" >
+                  <a className={`${styles.navLink}`}>Cost of utilities</a>
+                </Link>
               </li>
             )}
             <li onClick={removeActive}>
-              <a href='/user/blog' className={`${styles.navLink}`}>Blog</a>
+              <Link to="/user/blog">
+                <a className={`${styles.navLink}`}>Blog</a>
+              </Link>
             </li>
             <li onClick={removeActive}>
-              <a href='/user/contact' className={`${styles.navLink}`}>Contact</a>
+              <Link to="/user/contact">
+                <a className={`${styles.navLink}`}>Contact</a>
+              </Link>
             </li>
             {isLoggedIn ? (
               <>
                 <li onClick={removeActive}>
-                  <a href='/user/profile' className={`${styles.navLink}`}>Profile</a>
+                  <Link to="/user/profile" >
+                    <a className={`${styles.navLink}`}>Profile</a>
+                  </Link>
                 </li>
-                <button onClick={handleLogoutClick} className="btn-nav">
+                <button onClick={handleLogoutClick}  className="btn-signup" >
                   Logout
                 </button>
               </>
             ) : (
               <>
                 <li onClick={removeActive}>
-                  <a href='/user/login' className={`${styles.navLink}`}>login</a>
+                  <Link to="/user/login" >
+                    <a className={`${styles.navLink}`}>login</a>
+                  </Link>
                 </li>
-                <button onClick={handleSignUpClick} className="btn-nav">
+                <button onClick={handleSignUpClick} className="btn-signup">
                   Sign Up
                 </button>
               </>

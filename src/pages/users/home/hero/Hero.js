@@ -29,7 +29,7 @@ const Hero = () => {
             <div className='box'>
               <h4>Advance Filter</h4>
             </div>
-            <button className='btn1'>
+            <button className='btn-hero'>
               <FontAwesomeIcon icon={faSearch} />
             </button>
           </form>

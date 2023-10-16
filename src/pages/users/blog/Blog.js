@@ -1,32 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { firestore } from '../../../firebase';
 import Back from "../common/Back";
 import img from "../images/services.jpg";
-import BlogCard from "./BlogCard";
-import Bolg from "../images/about.jpg";
 import "./blog.css";
 
-const Blog = () => {
+const fetchNewsFromFirestore = async () => {
+  try {
+    const newsCollection = await firestore.collection("news").get();
+    const updatedNewsData = [];
+    newsCollection.forEach((doc) => {
+      const news = { id: doc.id, ...doc.data() };
+      updatedNewsData.push(news);
+    });
+    return updatedNewsData;
+  } catch (error) {
+    console.error("Error fetching news from Firestore: ", error);
+    return [];
+  }
+};
 
-  const blogs = [
-    {
-      title: "Blog Title 1",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget augue vel justo eleifend venenatis.",
-      author: "John Doe",
-      image: Bolg, 
-    },
-    {
-      title: "Blog Title 2",
-      description: "Sed ac tellus id nunc sollicitudin hendrerit. Etiam bibendum, neque eu facilisis hendrerit.",
-      author: "Jane Smith",
-      image: Bolg, 
-    },
-    {
-      title: "Blog Title 3",
-      description: "Vivamus euismod tincidunt justo, eget cursus metus lacinia nec. Aliquam id augue a libero.",
-      author: "Alice Johnson",
-      image: Bolg, 
-    },
-  ];
+const ITEMS_PER_PAGE = 3;
+
+function Blog() {
+  const [firebaseNews, setFirebaseNews] = useState([]);
+  const [currentPage] = useState(1);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const newsPage = firebaseNews.slice(startIndex, endIndex);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const newsData = await fetchNewsFromFirestore();
+        setFirebaseNews(newsData);
+      } catch (error) {
+        console.error("Error fetching news from Firestore: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -36,9 +51,29 @@ const Blog = () => {
           <h1>Board & News</h1>
           <p>It is a long established fact that a reader will be distracted by the of readable content of a page when lookings at its layouts the points of using.</p>
           <div className="row">
-            {blogs.map((blog, index) => (
-              <BlogCard key={index} blog={blog} />
-            ))}
+          {newsPage.map((news, index) => {
+              if (index % 3 === 0) {
+                return <div key={index} className="row">
+                  {newsPage.slice(index, index + 3).map((newsItem, itemIndex) => (
+                    <div key={itemIndex} className="col-md-4 mb-4">
+                      <div className="card">
+                        <img
+                          src={newsItem.image}
+                          className="card-img-top"
+                          alt={`News ${index + itemIndex}`}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{newsItem.title}</h5>
+                          <p className="card-text">{newsItem.description}</p>
+                          <p className="card-text">{newsItem.date}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>;
+              }
+              return null; 
+            })}
           </div>
         </div>
       </section>

@@ -34,9 +34,9 @@ import Contact from './pages/users/contact/Contact';
 import Review from './pages/users/review/Review';
 import Booking from './pages/users/booking/Booking';
 import Service from './pages/users/service/Service';
-import RoomDetail from './pages/users/home/recent/RoomDetail';
-import AgreementPage from './pages/users/home/recent/AgreementPage';
-import BillPayment from './pages/users/home/recent/BillPayment';
+import RoomDetail from './pages/users/booking/RoomDetail/RoomDetail';
+import BillPayment from './pages/users/booking/BillPayment/BillPayment';
+import CostPage from './pages/users/cost/CostPage';
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -134,7 +134,7 @@ const App = () => {
     return (
       <>
         <main className="content">
-          <Header setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
+          <Header />
           <div className="content_user">
             <Box>
               <Routes>
@@ -148,8 +148,8 @@ const App = () => {
                   <Route path="/user/booking" element={<Booking />} />
                   <Route path="/user/service" element={<Service />} />
                   <Route path="/user/roomdetail" element={<RoomDetail />} />
-                  <Route path="/user/agreement" element={<AgreementPage/>} />
                   <Route path="/user/billpayment" element={<BillPayment/>} />
+                  <Route path="/user/cost" element={<CostPage />} /> 
                 </>
               </Routes>
             </Box>

@@ -17,21 +17,29 @@ const Calender = () => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleSaveEvent = async () => {
+
+    const startTime = document.querySelector("#title").value;
+    const endTime = document.querySelector("#text").value;
+
     try {
       const newEvent = {
         startTimeEvent: document.querySelector("#starttime").value,
         endTimeEvent: document.querySelector("#endtime").value,
-        title: document.querySelector("#title").value,
-        text: document.querySelector("#text").value
+        title: startTime,
+        text: endTime
       }
-      const docRef = firestore.collection('Apartment').doc('Event').collection('EventData');
+
+      if(startTime>=endTime){
+        alert("วันที่สิ้นสุดต้องอยู่หลังวันที่เริ่มต้น");
+      } else {
+        const docRef = firestore.collection('Apartment').doc('Event').collection('EventData');
       const addedDoc = await docRef.add(newEvent);
 
       if (addedDoc) {
         alert('เพิ่มข้อมูลสำเร็จ');
         handleModalClose();
       }
-
+      }
     } catch (error) {
       console.log("Error add event : ", error);
     }
@@ -61,6 +69,7 @@ const Calender = () => {
 
       collRef.onSnapshot((querySnap) => {
         const newEvent = querySnap.docs.map(doc => ({
+          id: doc.id,
           title: doc.data().title,
           text: doc.data().text,
           startTimeEvent: new Date(doc.data().startTimeEvent),
@@ -80,16 +89,25 @@ const Calender = () => {
 
   const handleUpdate = () => {
     try {
+
+      const updateStartTime = new Date(selectedEvent.startTimeEvent).toISOString();
+      const updateEndTime = new Date(selectedEvent.endTimeEvent).toISOString()
+
       const newUpdate = {
-        title: document.querySelector("#updateEventTitle").value,
-        text: document.querySelector("#updateEventText").value,
-        startTimeEvent: document.querySelector("#updateEventStartTime").value,
-        endTimeEvent: document.querySelector("#updateEventEndTime").value
+        title: selectedEvent.title,
+        text: selectedEvent.text,
+        startTimeEvent: updateStartTime,
+        endTimeEvent: updateEndTime
       }
-      const docRef = firestore.collection('Apartment').doc('Event').collection('EventData').doc(selectedEvent.id);
+
+      if(updateStartTime>=updateEndTime){
+        alert("วันที่สิ้นสุดต้องอยู่หลังวันที่เริ่มต้น");
+      } else {
+        const docRef = firestore.collection('Apartment').doc('Event').collection('EventData').doc(selectedEvent.id);
       if (docRef.update(newUpdate)) {
         alert('อัพเดทเรียบร้อย');
         setIsEditMode(false);
+      }
       }
     } catch (error) {
       console.log('Error update data : ', error)
@@ -98,6 +116,7 @@ const Calender = () => {
 
   const handleDeleteEvent = () => {
     try {
+      console.log(selectedEvent.id)
       const docRef = firestore.collection('Apartment').doc('Event').collection('EventData').doc(selectedEvent.id);
       if (docRef.delete()) {
         alert('ลบกิจกรรมเรียบร้อย');
@@ -107,7 +126,7 @@ const Calender = () => {
       console.log('Error delete event : ', error)
     }
   };
-
+  
   return (
     <div>
       <div className="main-content">
@@ -132,36 +151,47 @@ const Calender = () => {
             <Modal show={showEventModal} onHide={handleModalClose}
               aria-labelledby="contained-modal-title-vcenter"
               centered>
-              <Modal.Header closeButton>{isEditMode ? (
-                <input
-                  type="text"
-                  value={selectedEvent.title}
-                  id='updateEventTitle'
-                  onChange={(e) => {
-                    const newTitle = e.target.value;
-                    setSelectedEvent((prevEvent) => ({ ...prevEvent, title: newTitle }));
-                  }}
-                />
-              ) : (
-                <h4>หัวข้อ : {selectedEvent.title}</h4>
-              )}</Modal.Header>
+              <Modal.Header closeButton><h2>อัพเดทกิจกรรม</h2></Modal.Header>
               <Modal.Body>
                 {isEditMode ? (
-                  <input
-                    type="text"
-                    value={selectedEvent.text}
-                    id='updateEventText'
-                    onChange={(e) => {
-                      const newText = e.target.value;
-                      setSelectedEvent((prevEvent) => ({ ...prevEvent, text: newText }));
-                    }}
-                  />
+                  <div>
+                    <p className='modal-title'>หัวข้อ</p>
+                    <input
+                      type="text"
+                      value={selectedEvent.title}
+                      id='updateEventTitle'
+                      onChange={(e) => {
+                        const newTitle = e.target.value;
+                        setSelectedEvent((prevEvent) => ({ ...prevEvent, title: newTitle }));
+                      }}
+                      className='modal-input'
+                    />
+                  </div>
                 ) : (
-                  <p>รายละเอียด : {selectedEvent.text}</p>
+                  <h5>หัวข้อ : {selectedEvent.title}</h5>
                 )}
+
                 {isEditMode ? (
                   <div>
-                    <p>วันเริ่มต้น</p>
+                    <p className='modal-title'>รายละเอียด</p>
+                    <input
+                      type="text"
+                      value={selectedEvent.text}
+                      id='updateEventText'
+                      onChange={(e) => {
+                        const newText = e.target.value;
+                        setSelectedEvent((prevEvent) => ({ ...prevEvent, text: newText }));
+                      }}
+                      className='modal-input'
+                    />
+                  </div>
+                ) : (
+                  <h5>รายละเอียด : {selectedEvent.text}</h5>
+                )}
+
+                {isEditMode ? (
+                  <div>
+                    <p className='modal-title'>วันเริ่มต้น</p>
                     <input
                       type='datetime-local'
                       value={selectedEvent.startTimeEvent}
@@ -170,8 +200,9 @@ const Calender = () => {
                         const newStartTime = e.target.value;
                         setSelectedEvent((prevEvent) => ({ ...prevEvent, startTimeEvent: newStartTime }));
                       }}
+                      className='modal-input'
                     />
-                    <p>วันสิ้นสุด</p>
+                    <p className='modal-title'>วันสิ้นสุด</p>
                     <input
                       type='datetime-local'
                       value={selectedEvent.endTimeEvent}
@@ -180,35 +211,36 @@ const Calender = () => {
                         const newEndTime = e.target.value;
                         setSelectedEvent((prevEvent) => ({ ...prevEvent, endTimeEvent: newEndTime }));
                       }}
+                      className='modal-input'
                     />
                   </div>
                 ) : (
                   <div>
-                    <p>เริ่มวันที่ : {moment(selectedEvent.startTimeEvent).format(' DD/MM/YYYY เวลา HH:mm น.')}</p>
-                    <p>จบวันที่ : {moment(selectedEvent.endTimeEvent).format(' DD/MM/YYYY เวลา HH:mm น.')}</p>
+                    <h5>เริ่มวันที่ : {moment(selectedEvent.startTimeEvent).format(' DD/MM/YYYY เวลา HH:mm น.')}</h5>
+                    <h5>จบวันที่ : {moment(selectedEvent.endTimeEvent).format(' DD/MM/YYYY เวลา HH:mm น.')}</h5>
                   </div>
                 )}
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="success" onClick={() => {
+                <button variant="success" onClick={() => {
                   if (isEditMode) {
                     handleUpdate();
                   } else {
-                    setIsEditMode(true); // สลับไปเป็นโหมดแก้ไข
+                    setIsEditMode(true);
                   }
-                }}>
+                }} className="save-button" >
                   {isEditMode ? 'Save' : 'Edit'}
-                </Button>
+                </button>
                 {isEditMode ? (
                   <>
-                    <Button variant="secondary" onClick={() => setIsEditMode(false)}>
+                    <button variant="secondary" onClick={() => setIsEditMode(false)} className="close-button">
                       Cancel
-                    </Button>
+                    </button>
                   </>
                 ) : (
-                  <Button variant="danger" onClick={handleDeleteEvent}>
+                  <button variant="danger" onClick={handleDeleteEvent} className="delete-button" >
                     Delete
-                  </Button>
+                  </button>
                 )}
               </Modal.Footer>
             </Modal>
@@ -216,17 +248,20 @@ const Calender = () => {
           {selectedEvent instanceof Date && (
             <Modal show={showEmptyModal} onHide={handleModalClose}>
               <Modal.Header closeButton><h2>สร้างกิจกรรม</h2></Modal.Header>
-              <Modal.Body>
-                <p>วันเริ่มต้น</p>
-                <input type='datetime-local' id='starttime'></input>
-                <p>วันสิ้นสุด</p>
-                <input type='datetime-local' id='endtime'></input> <br />
-                <input type='text' placeholder='หัวข้อ' id='title'></input> <br />
-                <input type='text' placeholder='รายละเอียด' id='text'></input>
+              <Modal.Body>  
+                <p className='modal-title'>หัวข้อ</p>
+                <input type='text' placeholder='หัวข้อ' id='title' className='modal-input'></input> <br />
+                <p className='modal-title'>รายละเอียด</p>
+                <input type='text' placeholder='รายละเอียด' id='text' className='modal-input'></input>
+                <p className='modal-title'>วันเริ่มต้น</p>
+                <input type='datetime-local' id='starttime' className='modal-input'></input>
+                <p className='modal-title'>วันสิ้นสุด</p>
+                <input type='datetime-local' id='endtime' className='modal-input'></input> <br />
+              
               </Modal.Body>
               <Modal.Footer>
-                <Button onClick={handleSaveEvent}>Save</Button>
-                <Button onClick={handleModalClose}>Close</Button>
+                <button onClick={handleSaveEvent} className="save-button">Save</button>
+                <button onClick={handleModalClose} className="close-button">Close</button>
               </Modal.Footer>
             </Modal>
           )}

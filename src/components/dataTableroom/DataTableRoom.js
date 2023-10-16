@@ -8,20 +8,19 @@ import PageviewIcon from '@mui/icons-material/Pageview';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import "./dataTable.css";
 import Button from '@mui/material/Button';
 import {
   GridToolbarExport,
   GridToolbarQuickFilter
 } from "@mui/x-data-grid";
-
+import './DataTableRoom.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-import { firestore , storage} from "../../firebase";
+import { firestore, storage } from "../../firebase";
 
-const DataTableAC = (props) => {
+const DataTableRoom = (props) => {
 
   const { slug, fetchDataRoom } = props;
   const isRoomPage = slug === "room";
@@ -29,45 +28,47 @@ const DataTableAC = (props) => {
   const [showSmallModal, setShowSmallModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roomId, setRoomId] = useState('');
-  const [roomData , setRoomData] = useState([]);
-  const [UserData , setUserData] = useState([]);
-  const [showOccupied , setShowOccupied] = useState(false);
-  const [showAssign , setShowAssign] = useState(false);
-  const [showSlipImg , setShowSlipImg ] = useState('');
-  const [smallModalTitle , setSmallModalTitle] = useState(null);
-  const [smallModalDetail , setSmallModalDetail] = useState(null);
+  const [roomData, setRoomData] = useState([]);
+  const [UserData, setUserData] = useState([]);
+  const [showOccupied, setShowOccupied] = useState(false);
+  const [showAssign, setShowAssign] = useState(false);
+  const [showSlipImg, setShowSlipImg] = useState('');
+  const [smallModalTitle, setSmallModalTitle] = useState(null);
+  const [smallModalDetail, setSmallModalDetail] = useState(null);
 
-  const handleFetchDataRoom = async (status,roomNumber) => {
+  const handleFetchDataRoom = async (status, roomNumber) => {
     try {
       console.log(roomNumber);
       const DocRef = await firestore.collection('rooms').doc(roomNumber);
       DocRef.get().then((doc) => {
         setRoomData(doc.data());
 
-        if(status === 'Assign'){const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
-        ImgRef.getDownloadURL().then((url) => {
-          setShowSlipImg(url);
-        })}
-        if(doc.exists){
+        if (status === 'Assign') {
+          const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
+          ImgRef.getDownloadURL().then((url) => {
+            setShowSlipImg(url);
+          })
+        }
+        if (doc.exists) {
           firestore.collection('profiles').doc(doc.data().owner).get().then((doc) => {
-            if(doc.exists){
+            if (doc.exists) {
               setUserData(doc.data());
               //console.log(doc.data());
-              if(status === 'Occupied'){
+              if (status === 'Occupied') {
                 setShowOccupied(true)
-              } else if (status === 'Assign'){
+              } else if (status === 'Assign') {
                 setShowAssign(true);
               }
-            }else{
+            } else {
               console.log('ไม่พบข้อมูลเจ้าของห้อง')
             }
           })
-        }else{
+        } else {
           console.log('not have this room');
         }
       })
     } catch (error) {
-      console.log('error fetch data : ',error);
+      console.log('error fetch data : ', error);
     }
   }
 
@@ -77,7 +78,7 @@ const DataTableAC = (props) => {
       console.log(`Room ${roomId} deleted successfully.`);
       setShowDeleteModal(false);
       fetchDataRoom();
-        setTimeout(() => {
+      setTimeout(() => {
         setSmallModalTitle('Delete Success');
         setSmallModalDetail(`Delete Room : ${roomId} Success`);
         setShowSmallModal(true);
@@ -135,53 +136,53 @@ const DataTableAC = (props) => {
 
   const handleOccupied = async () => {
     try {
-      await firestore.collection('rooms').doc(roomId).update({ 
-        status : 'Occupied'
-       }).then(() =>{
+      await firestore.collection('rooms').doc(roomId).update({
+        status: 'Occupied'
+      }).then(() => {
         console.log('Update Success');
         handleClose();
         fetchDataRoom();
         setTimeout(() => {
-        setSmallModalTitle('Update Success');
-        setSmallModalDetail(`Update Room ${roomId} : to Occupied Success`);
-        setShowSmallModal(true);
-      }, 1000);
-      setTimeout(() => {
-        setShowSmallModal(false);
-      }, 2000);
+          setSmallModalTitle('Update Success');
+          setSmallModalDetail(`Update Room ${roomId} : to Occupied Success`);
+          setShowSmallModal(true);
+        }, 1000);
+        setTimeout(() => {
+          setShowSmallModal(false);
+        }, 2000);
       }).catch((error) => {
-        console.error('Error Update : ',error);
+        console.error('Error Update : ', error);
       })
     } catch (error) {
-      console.log('error update to Occupied : ',error)
+      console.log('error update to Occupied : ', error)
     }
   };
 
   const handleVacant = async () => {
     try {
-      await firestore.collection('rooms').doc(roomId).update({ 
-        status : 'Vacant',
-        datein : '',
-        dateout : '',
-        img : '',
-        owner : '',
-       }).then(() =>{
+      await firestore.collection('rooms').doc(roomId).update({
+        status: 'Vacant',
+        datein: '',
+        dateout: '',
+        img: '',
+        owner: '',
+      }).then(() => {
         console.log('Update Success');
         handleClose();
         fetchDataRoom();
         setTimeout(() => {
-        setSmallModalTitle('Update Success');
-        setSmallModalDetail(`Update Room ${roomId} : to Vancant Success`);
-        setShowSmallModal(true);
-      }, 1000);
-      setTimeout(() => {
-        setShowSmallModal(false);
-      }, 2000);
+          setSmallModalTitle('Update Success');
+          setSmallModalDetail(`Update Room ${roomId} : to Vancant Success`);
+          setShowSmallModal(true);
+        }, 1000);
+        setTimeout(() => {
+          setShowSmallModal(false);
+        }, 2000);
       }).catch((error) => {
-        console.error('Error Update : ',error);
+        console.error('Error Update : ', error);
       })
     } catch (error) {
-      console.log('error update to Vacant : ',error)
+      console.log('error update to Vacant : ', error)
     }
   };
 
@@ -195,24 +196,24 @@ const DataTableAC = (props) => {
           <Button variant="text" startIcon={<AddIcon />} onClick={handleShow}>ADD</Button>
           <GridToolbarExport />
         </div>
-        <Modal show={showModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
-          centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Room</Modal.Title>
+        <Modal show={showModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
+          <Modal.Header closeButton className="modal-header">
+            <Modal.Title className="modal-title">Add Room</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className="modal-body">
             <Form>
               <Form.Group>
-                <Form.Label>Room Number</Form.Label>
+                <Form.Label className="form-label">Room Number</Form.Label>
                 <Form.Control
                   type="text"
                   name="title"
                   id="title"
+                  className="form-control"
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>Status Room</Form.Label>
-                <Form.Control as="select" name="Status" id="Status">
+                <Form.Label className="form-label">Status Room</Form.Label>
+                <Form.Control as="select" name="Status" id="Status" className="form-control">
                   <option value="Vacant">Vacant</option>
                   <option value="Occupied">Occupied</option>
                   <option value="Assign">Assign</option>
@@ -220,13 +221,13 @@ const DataTableAC = (props) => {
               </Form.Group>
             </Form>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+          <Modal.Footer className="modal-footer">
+            <button variant="secondary" onClick={handleClose} className="close-button">
               Close
-            </Button>
-            <Button variant="primary" onClick={handleAddRoom}>
+            </button>
+            <button variant="primary" onClick={handleAddRoom} className="add-room-button">
               Add Room
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
@@ -243,25 +244,24 @@ const DataTableAC = (props) => {
           </Modal.Body>
         </Modal>
 
-        <Modal show={showDeleteModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
-          centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Delete Room {roomId}</Modal.Title>
+        <Modal show={showDeleteModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered >
+          <Modal.Header closeButton className="modal-header">
+            <Modal.Title className="modal-title">Delete Room {roomId}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className="modal-body">
             <Form>
               <Form.Group>
                 <Form.Label>Are you sure to delete room : {roomId} ?</Form.Label>
               </Form.Group>
             </Form>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+          <Modal.Footer >
+            <button variant="secondary" onClick={handleClose} className="close-button">
               Close
-            </Button>
-            <Button color="error" variant="outlined" onClick={handleDelete}>
+            </button>
+            <button variant="outlined" onClick={handleDelete} className="delete-room-button">
               Delete Room
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
@@ -272,7 +272,7 @@ const DataTableAC = (props) => {
           </Modal.Header>
           <Modal.Body>
             <Form>
-            <Form.Group controlId="profile owner">
+              <Form.Group controlId="profile owner">
                 <Form.Label>Profile Name : {UserData.name}</Form.Label><br />
                 <Form.Label>Profile Phone Number : {UserData.phone}</Form.Label><br />
                 <Form.Label>Profile Email : {UserData.email}</Form.Label><br />
@@ -282,44 +282,46 @@ const DataTableAC = (props) => {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button color="error" variant="outlined" onClick={handleVacant}>
+            <button color="error" variant="outlined" onClick={handleVacant} className="add-room-button">
               Change to Vacant
-            </Button>
-            <Button variant="secondary" onClick={handleClose}>
+            </button>
+            <button variant="secondary" onClick={handleClose} className="close-button">
               Close
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
-        <Modal show={showAssign} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter"
-          centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Room {roomId} Information</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group controlId="profile owner">
-              <Form.Label>Profile Name : {UserData.name}</Form.Label><br />
-                <Form.Label>Profile Phone Number : {UserData.phone}</Form.Label><br />
-                <Form.Label>Profile Email : {UserData.email}</Form.Label><br />
-                <Form.Label>Profile DateIn : {roomData.datein}</Form.Label><br />
-                <Form.Label>Profile DateOut : {roomData.dateout}</Form.Label><br />
-                <img src={showSlipImg} alt="slip_bank_images" />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button color="success" variant="contained" onClick={handleOccupied}>
-              Change to Occupied
-            </Button>
-            <Button color="error" variant="outlined" onClick={handleVacant} >
-              Change to Vacant
-            </Button>
-            <Button onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <Modal show={showAssign} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
+  <Modal.Header closeButton>
+    <Modal.Title>Room {roomId} Information</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Form.Group controlId="profile owner">
+        <div style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
+          <img className="img-room-bille" src={showSlipImg} alt="slip_bank_images" style={{ width: '200px', height: '330px', marginRight: '10px' }} />
+          <div>
+            <p><strong>Name:</strong> {UserData.name}</p>
+            <p><strong>Phone Number:</strong> {UserData.phone}</p>
+            <p><strong>Email:</strong> {UserData.email}</p>
+            <p><strong>Check-In Date:</strong> {roomData.datein}</p>
+            <p><strong>Check-Out Date:</strong> {roomData.dateout}</p>
+          </div>
+        </div>
+      </Form.Group>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <button onClick={handleOccupied} className="add-room-button">
+      Change to Occupied
+    </button>
+    <button onClick={handleVacant} className="close-button">
+      Change to Vacant
+    </button>
+  </Modal.Footer>
+</Modal>
+
+
       </div>
     );
   }
@@ -335,14 +337,14 @@ const DataTableAC = (props) => {
             params.row.status !== "Vacant" && (
               <IconButton onClick={() => {
                 setRoomId(params.row.roomNumber);
-                handleFetchDataRoom(params.row.status , params.row.roomNumber);
+                handleFetchDataRoom(params.row.status, params.row.roomNumber);
               }}>
                 <PageviewIcon />
               </IconButton>
             )
           )
           }
-          
+
           <div className="delete" onClick={() => {
             setRoomId(params.row.roomNumber);
             setShowDeleteModal(true);
@@ -353,9 +355,9 @@ const DataTableAC = (props) => {
           </div>
         </div>
       );
-      
+
     },
-    
+
   };
 
   return (
@@ -363,7 +365,7 @@ const DataTableAC = (props) => {
       <DataGrid
         className="dataGrid"
         rows={props.rows}
-        columns={ isRoomPage ? [...props.columns , actionColumn] : props.columns}
+        columns={isRoomPage ? [...props.columns, actionColumn] : props.columns}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 10 },
@@ -385,4 +387,4 @@ const DataTableAC = (props) => {
   );
 };
 
-export default DataTableAC;
+export default DataTableRoom;

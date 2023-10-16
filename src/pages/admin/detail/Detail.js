@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./detail.css";
-import DataTableAC from "../../../components/dataTableAC/DataTableAC";
+import DataTableAC from "../../../components/dataTableroom/DataTableRoom";
 import Add from "../../../components/add/Add";
 import { firestore } from "../../../firebase";
 

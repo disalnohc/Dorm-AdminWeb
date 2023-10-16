@@ -58,9 +58,10 @@ function SignUpForm() {
 
   return (
     <div className="form-container-2 sign-up-container-2">
-      <form onSubmit={handleOnSubmit} className='form-2'>
+      <form onSubmit={handleOnSubmit} className='form'>
         <h1>Create Account</h1>
         <input
+          className="login-input"
           type="text"
           name="name"
           value={state.name}
@@ -68,6 +69,7 @@ function SignUpForm() {
           placeholder="Name"
         />
         <input
+          className="login-input"
           type="tel"
           name="number"
           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
@@ -76,6 +78,7 @@ function SignUpForm() {
           placeholder="Phone Number"
         />
         <input
+          className="login-input"
           type="email"
           name="email"
           value={state.email}
@@ -83,6 +86,7 @@ function SignUpForm() {
           placeholder="Email"
         />
         <input
+          className="login-input"
           type="password"
           name="password"
           value={state.password}
@@ -90,13 +94,14 @@ function SignUpForm() {
           placeholder="Password"
         />
         <input
+          className="login-input"
           type="password"
           name="confirmpassword"
           value={state.confirmpassword}
           onChange={handleChange}
           placeholder="Confirm Password"
         />
-        <button>Sign Up</button>
+        <button className="btn-login">Sign Up</button>
       </form>
     </div>
   );

@@ -195,3 +195,20 @@ export const footer = [
     text: [{ list: "About" }, { list: "Blog" }, { list: "Pricing" }, { list: "Affiliate" }, { list: "Login" }, { list: "Changelog" }],
   },
 ]
+export const Service = [
+  {
+    cover: "../images/service/image-1.png",
+    name: "Security",
+    total: "122 Property",
+  },
+  {
+    cover: "../images/service/image-2.png",
+    name: "Housewife",
+    total: "155 Property",
+  },
+  {
+    cover: "../images/service/image-3.png",
+    name: "Repairt",
+    total: "300 Property",
+  },
+]

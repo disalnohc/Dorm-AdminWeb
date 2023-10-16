@@ -1,45 +1,118 @@
-import React from "react"
-import { list } from "../../data/Data"
+import React, { useState, useEffect } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { firestore } from "../../../../firebase";
+import { Link } from "react-router-dom";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { Dna } from 'react-loader-spinner'
 
 const RecentCard = () => {
-  return (
-    <>
-      <div className='content-user grid3 mtop'>
-        {list.map((val, index) => {
-          const { cover, category, location, name, price, type } = val
-          return (
-            <div className='box shadow' key={index}>
-              <div className='img'>
-                <img src={cover} alt='' />
-              </div>
-              <div className='text'>
-                <div className='category flex'>
-                  <span style={{ background: category === "For Sale" ? "#25b5791a" : "#ff98001a", color: category === "For Sale" ? "#25b579" : "#ff9800" }}>
-                    {category}
-                  </span>
-                  <FontAwesomeIcon icon={faHeart} />
-                </div>
-                <h4>{name}</h4>
-                <p>
-                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {location}
-                </p>
+  const category = "For Sale";
+  const [roomInfo, setRoomInfo] = useState([]);
+  const [Loading, setLoading] = useState(false)
+  useEffect(() => {
+    try {
+      const fetchData = async () => {
+        const collRef = firestore.collection('rooms').where('status', '==', 'Vacant');
+        const querySnapshot = await collRef.get();
+        const InfoRoom = [];
+        setLoading(true);
 
-              </div>
-              <div className='button flex'>
-                <div>
-                  <button className='btn2' > <a href='/user/roomdetail'>{price}</a></button> <label htmlFor=''>/sqft</label>
+        await Promise.all(
+          querySnapshot.docs.map(async (docs) => {
+            const id = docs.id;
+            const type = docs.data().type;
+            const status = docs.data().status;
+
+            const docRef = await firestore.collection('typerooms').doc(type).get();
+            if (docRef.exists) {
+              const imageUrl = `https://firebasestorage.googleapis.com/v0/b/hopak-8af20.appspot.com/o/types_image%2F${type}%2F${docRef.data().img}?alt=media`
+              const data = {
+                roomNumber: id,
+                roomType: docRef.data().name,
+                roomStatus: status,
+                roomPrice: docRef.data().price,
+                roomLocation: docRef.data().location,
+                roomImg: imageUrl,
+              }
+              //console.log(data);
+              InfoRoom.push(data);
+            } else {
+              console.log('ไม่พบข้อมูลชนิดห้องพัก');
+            }
+          })
+        )
+        setRoomInfo(InfoRoom);
+        setLoading(false);
+      }
+      fetchData();
+    } catch (error) {
+      console.log('ดึงข้อมูลห้องพักผิดพลาด: ', error);
+    }
+  }, []);
+
+  if (Loading === true) {
+    return (
+      <>
+        <div className="Loading" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <>
+            <Dna
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+            />
+          </>
+        </div>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <div className='content-user grid3 mtop'>
+          {roomInfo.map((data) => {
+            return (
+              <div className='box shadow' key={data.roomNumber}>
+                <div className='img'>
+                  <img src={data.roomImg} alt='' />
                 </div>
-                <span>{type}</span>
+                <div className='text'>
+                  <div className='category flex'>
+                    <span style={{ background: category === "For Sale" ? "#25b5791a" : "#ff98001a", color: category === "For Sale" ? "#25b579" : "#ff9800" }}>
+                      {data.roomStatus}
+                    </span>
+                    <FontAwesomeIcon icon={faHeart} />
+                  </div>
+                  <h4>ห้องพัก {data.roomNumber} ชนิดห้อง {data.roomType}</h4>
+                  <p>
+                    <FontAwesomeIcon icon={faMapMarkerAlt} />  {data.roomLocation}
+                  </p>
+
+                </div>
+                <div className='button flex'>
+                  <div>
+                    <Link to={'/user/roomdetail'} state={{
+                      roomNumber: data.roomNumber,
+                      roomLocation: data.roomLocation,
+                      roomStatus: data.roomStatus,
+                      roomPrice: data.roomPrice,
+                      roomType: data.roomType,
+                      roomImg: data.roomImg
+                    }}>
+                      <button className="btn2">{data.roomPrice}</button>
+                    </Link> <label htmlFor=''>/month</label>
+                  </div>
+                  <span>{data.type}</span>
+                </div>
               </div>
-            </div>
-          )
-        })}
-      </div>
-    </>
-  )
+            )
+          })}
+        </div>
+      </>
+    )
+  }
 }
 
 export default RecentCard

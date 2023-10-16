@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./room.css";
-import DataTableAC from "../../../components/dataTableAC/DataTableAC"; 
+import DataTableRoom from "../../../components/dataTableroom/DataTableRoom"; 
 import { firestore } from "../../../firebase";
 
 const columns = [
@@ -20,7 +19,6 @@ const columns = [
 ];
 
 const Room = () => {
-  //const [open, setOpen] = useState(false);
   const [roomData, setRoomData] = useState([]); 
 
   useEffect(() => {
@@ -48,10 +46,8 @@ const Room = () => {
       <div className="header-content">
         <h2>ผังห้องพัก</h2>
       </div>
-      <DataTableAC slug="room" columns={columns} rows={roomData} fetchDataRoom={fetchDataRoom} />
+      <DataTableRoom slug="room" columns={columns} rows={roomData} fetchDataRoom={fetchDataRoom} />
     </div>
-
-    
   );
 };
 

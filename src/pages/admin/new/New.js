@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './new.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { firestore, storage } from '../../../firebase';
 
@@ -219,7 +218,7 @@ function News() {
         </div>
         <div className="pagination">
           <button
-            className="btn btn-primary"
+            className="previous-botton"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
@@ -228,7 +227,7 @@ function News() {
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
-              className={`btn btn-primary ${currentPage === index + 1 ? "active" : ""
+              className={`number-button ${currentPage === index + 1 ? "active" : ""
                 }`}
               onClick={() => handlePageChange(index + 1)}
             >
@@ -236,16 +235,16 @@ function News() {
             </button>
           ))}
           <button
-            className="btn btn-primary"
+            className="next-button"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             Next
           </button>
         </div>
-
-        <div className="add-button">
-          <button className="btn btn-primary" onClick={handleShow}>
+        
+        <div className="add-main">
+          <button className="add-button" onClick={handleShow}>
             Add News
           </button>
         </div>
@@ -304,19 +303,20 @@ function News() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <button variant="secondary" onClick={handleClose} className='close-button'>
             Close
-          </Button>
-          <Button
+          </button>
+          <button
             variant="primary"
             onClick={
               editing
                 ? () => handleEditNews(newNews.id, newNews)
                 : handleAddNews
             }
+            className='add-new-button'
           >
             {editing ? "Save Changes" : "Add News"}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

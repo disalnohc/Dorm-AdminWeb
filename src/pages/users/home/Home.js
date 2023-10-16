@@ -6,6 +6,8 @@ import Recent from "./recent/Recent"
 import Team from "./team/Team"
 import Contact from "../contact/Contact"
 import Blog from "./blog/Blog"
+import Channel from "./channel/Channel"
+import Calendar from "./calendar/calendar"
 
 const Home = () => {
   return (
@@ -16,6 +18,8 @@ const Home = () => {
       <Awards />
       <Team />
       <Blog />
+      <Channel />
+      <Calendar />
       <Contact />
     </>
   )
