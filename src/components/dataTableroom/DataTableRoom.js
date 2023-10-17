@@ -28,15 +28,15 @@ const DataTableRoom = (props) => {
   const [showSmallModal, setShowSmallModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [roomId, setRoomId] = useState('');
-  const [roomData , setRoomData] = useState([]);
-  const [UserData , setUserData] = useState([]);
-  const [showOccupied , setShowOccupied] = useState(false);
-  const [showAssign , setShowAssign] = useState(false);
-  const [showSlipImg , setShowSlipImg ] = useState('');
-  const [smallModalTitle , setSmallModalTitle] = useState(null);
-  const [smallModalDetail , setSmallModalDetail] = useState(null);
-  const [documents , setDocument ] = useState([]);
-  const [selectoption , setSelectOption] = useState(null);
+  const [roomData, setRoomData] = useState([]);
+  const [UserData, setUserData] = useState([]);
+  const [showOccupied, setShowOccupied] = useState(false);
+  const [showAssign, setShowAssign] = useState(false);
+  const [showSlipImg, setShowSlipImg] = useState('');
+  const [smallModalTitle, setSmallModalTitle] = useState(null);
+  const [smallModalDetail, setSmallModalDetail] = useState(null);
+  const [documents, setDocument] = useState([]);
+  const [selectoption, setSelectOption] = useState(null);
 
   const handleFetchDataRoom = async (status, roomNumber) => {
     try {
@@ -45,12 +45,13 @@ const DataTableRoom = (props) => {
       DocRef.get().then((doc) => {
         setRoomData(doc.data());
 
-        if(status === 'Assign'){
-        const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
-        ImgRef.getDownloadURL().then((url) => {
-          setShowSlipImg(url);
-        })}
-        if(doc.exists){
+        if (status === 'Assign') {
+          const ImgRef = storage.ref().child(`slip_image/${doc.data().img}`)
+          ImgRef.getDownloadURL().then((url) => {
+            setShowSlipImg(url);
+          })
+        }
+        if (doc.exists) {
           firestore.collection('profiles').doc(doc.data().owner).get().then((doc) => {
             if (doc.exists) {
               setUserData(doc.data());
@@ -80,7 +81,7 @@ const DataTableRoom = (props) => {
       const documentIds = querySnapshot.docs.map((doc) => doc.id);
       setDocument(documentIds);
     }
-  
+
     fetchDataType();
   }, []);
 
@@ -173,13 +174,13 @@ const DataTableRoom = (props) => {
 
   const handleVacant = async () => {
     try {
-      await firestore.collection('rooms').doc(roomId).update({ 
-        status : 'Vacant',
-        datein : null,
-        dateout : null,
-        img : null,
-        owner : null,
-       }).then(() =>{
+      await firestore.collection('rooms').doc(roomId).update({
+        status: 'Vacant',
+        datein: null,
+        dateout: null,
+        img: null,
+        owner: null,
+      }).then(() => {
         console.log('Update Success');
         handleClose();
         fetchDataRoom();
@@ -227,14 +228,13 @@ const DataTableRoom = (props) => {
               <Form.Group>
                 <Form.Label className="form-label">Status Room</Form.Label>
                 <Form.Control as="select" name="Status" id="Status" className="form-control">
-
                   <option value="Vacant">Vacant</option>
                   <option value="Occupied">Occupied</option>
                   <option value="Assign">Assign</option>
                 </Form.Control>
               </Form.Group>
-              <Form.Group className="d-flex flex-row align-items-center">
-              <Form.Label htmlFor="title" style={{ whiteSpace: "nowrap" }}>Type Room</Form.Label>
+              <Form.Group >
+                <Form.Label htmlFor="title" className="form-label">Type Room</Form.Label>
                 <Form.Control as="select" name="TypeRooms" id="TypeRooms" value={selectoption}>
                   {documents.map((documentId) => (
                     <option key={documentId} value={documentId}>
@@ -316,34 +316,34 @@ const DataTableRoom = (props) => {
         </Modal>
 
         <Modal show={showAssign} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
-  <Modal.Header closeButton>
-    <Modal.Title>Room {roomId} Information</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form>
-      <Form.Group controlId="profile owner">
-        <div style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
-          <img className="img-room-bille" src={showSlipImg} alt="slip_bank_images" style={{ width: '200px', height: '330px', marginRight: '10px' }} />
-          <div>
-            <p><strong>Name:</strong> {UserData.name}</p>
-            <p><strong>Phone Number:</strong> {UserData.phone}</p>
-            <p><strong>Email:</strong> {UserData.email}</p>
-            <p><strong>Check-In Date:</strong> {roomData.datein}</p>
-            <p><strong>Check-Out Date:</strong> {roomData.dateout}</p>
-          </div>
-        </div>
-      </Form.Group>
-    </Form>
-  </Modal.Body>
-  <Modal.Footer>
-    <button onClick={handleOccupied} className="add-room-button">
-      Change to Occupied
-    </button>
-    <button onClick={handleVacant} className="close-button">
-      Change to Vacant
-    </button>
-  </Modal.Footer>
-</Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Room {roomId} Information</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="profile owner">
+                <div style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
+                  <img className="img-room-bille" src={showSlipImg} alt="slip_bank_images" style={{ width: '200px', height: '330px', marginRight: '10px' }} />
+                  <div>
+                    <p><strong>Name:</strong> {UserData.name}</p>
+                    <p><strong>Phone Number:</strong> {UserData.phone}</p>
+                    <p><strong>Email:</strong> {UserData.email}</p>
+                    <p><strong>Check-In Date:</strong> {roomData.datein}</p>
+                    <p><strong>Check-Out Date:</strong> {roomData.dateout}</p>
+                  </div>
+                </div>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <button onClick={handleOccupied} className="add-room-button">
+              Change to Occupied
+            </button>
+            <button onClick={handleVacant} className="close-button">
+              Change to Vacant
+            </button>
+          </Modal.Footer>
+        </Modal>
 
 
       </div>

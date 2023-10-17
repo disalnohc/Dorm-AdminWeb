@@ -35,8 +35,10 @@ import Review from './pages/users/review/Review';
 import Booking from './pages/users/booking/Booking';
 import Service from './pages/users/service/Service';
 import RoomDetail from './pages/users/booking/RoomDetail/RoomDetail';
-import BillPayment from './pages/users/booking/BillPayment/BillPayment';
 import CostPage from './pages/users/cost/CostPage';
+import ServiceUser from './pages/users/service/security/security';
+import Housewife from './pages/users/service/housewife/housewife';
+import RepairUser from './pages/users/service/repairt/repairt';
 
 import { auth } from './firebase';
 import { firestore } from './firebase';
@@ -163,9 +165,11 @@ const App = () => {
                   <Route path="/user/booking" element={<Booking />} />
                   <Route path="/user/service" element={<Service />} />
                   <Route path="/user/roomdetail" element={<RoomDetail />} />
-                  <Route path="/user/billpayment" element={<BillPayment/>} />
                   <Route path="/user/cost" element={<CostPage />} /> 
                   <Route path='/user/profile' element={<Profile />} />
+                  <Route path="/user/security" element={<ServiceUser />} />
+                  <Route path="/user/housewife" element={<Housewife />} />
+                  <Route path="/user/repairt" element={<RepairUser />} />
                 </>
               </Routes>
             </Box>

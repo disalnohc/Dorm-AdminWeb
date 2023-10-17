@@ -65,7 +65,7 @@
   color: #717171;
 }
 .room1 {
-  font-size: 22px;
+  font-size: 24px;
   color: #000;
 }
 
@@ -128,5 +128,27 @@
 .right-room img {
   max-width: 100%;
 }
+.room-price {
+  font-size: 20px;
+  color: #ff0000; 
+  text-transform: uppercase; 
+}
 
+.room-ll {
+  font-size: 20px;
+  color: #110324; 
+  text-transform: uppercase; 
+}
+
+.room-type {
+  font-size: 20px;
+  color: #110324; 
+  text-transform: uppercase; 
+}
+
+.room-location {
+  font-size: 20px;
+  color: #110324; 
+  text-transform: uppercase; 
+}
 
