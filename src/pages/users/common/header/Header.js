@@ -89,11 +89,11 @@ const Header = ({ setIsAuthenticated, setIsAdmin }) => {
                 </Link>
               </li>
             )}
-            <li onClick={removeActive}>
+            {/* <li onClick={removeActive}>
               <Link to="/user/review" >
                 <a className={`${styles.navLink}`}>Review</a>
               </Link>
-            </li>
+            </li> */}
             {isLoggedIn && (
               <li onClick={removeActive}>
                 <Link to="/user/service" >

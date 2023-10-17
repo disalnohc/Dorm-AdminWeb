@@ -48,6 +48,11 @@ const ServiceDetails = ({ selectedServices }) => {
           <text className="left-align">ล้างซิงค์ห้องน้ำ</text>
         </div>
       )}
+      {selectedServices.Order && (
+        <div>
+          <text className="left-align">อื่นๆ</text>
+        </div>
+      )}
     </div>
   );
 };

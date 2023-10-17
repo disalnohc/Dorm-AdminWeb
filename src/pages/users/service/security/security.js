@@ -1,166 +1,275 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./service.css";
-import ServiceDetails from "./ServiceDetails";
+import ServiceDetails from "../ServiceDetails";
+import { Modal, Button } from "react-bootstrap";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
+import PaymentModal from "../PaymentModal";
 
 const Service = () => {
-    const userUID = firebase.auth().currentUser.uid;
-    const db = firebase.firestore();
+  const userUID = firebase.auth().currentUser.uid;
+  const db = firebase.firestore();
+  /*
+  -- เผื่อใช้ --
+  const [slipFile, setSlipFile] = useState(null);
 
-    const [selectedServices, setSelectedServices] = useState({
-        catchDangerousAnimals: false,
-        environmentProtection: false,
-        foodDelivery: false,
-    });
+  const handleSlipFileChange = async (event) => {
+    const file = event.target.files[0];
+    setSlipFile(file);
 
-    const [foodDeliveryPrice, setFoodDeliveryPrice] = useState(20);
-    const [environmentProtectionPrice, setEnvironmentProtectionPrice] = useState(0);
+    if (file) {
+      const storageRef = firebase.storage().ref();
+      const fileRef = storageRef.child(`slips/${file.name}`);
 
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [imageUrl, setImageUrl] = useState("");
+      try {
+        await fileRef.put(file);
+        console.log("อัปโหลด Slip การโอนเงินเสร็จสิ้น");
 
+        const slipUrl = await fileRef.getDownloadURL();
 
+        const servicesRef = db
+          .collection("Services")
+          .doc("Security")
+          .collection(userUID);
 
-    const handleCheckboxChange = (service) => {
-        setSelectedServices({
-            ...selectedServices,
-            [service]: !selectedServices[service],
+        await servicesRef.add({
+          title: "Security",
+          selectedServices,
+          totalAmount,
+          imageUrl,
+          SlipService: slipUrl, // เพิ่ม SlipService ลงใน Firestore
         });
-    };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setSelectedFile(file);
+        console.log("บริการถูกเพิ่มลงใน Firestore");
+        setConfirmation(true);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาด: ", error);
+      }
+    }
+  };
+  */
 
-        if (file) {
-            const reader = new FileReader();
+  const [selectedServices, setSelectedServices] = useState({
+    catchDangerousAnimals: false,
+    environmentProtection: false,
+    foodDelivery: false,
+  });
 
-            reader.onload = (e) => {
-                const imageSrc = e.target.result;
-                setImageUrl(imageSrc);
-            };
+  const [foodDeliveryPrice, setFoodDeliveryPrice] = useState(20);
+  const [environmentProtectionPrice, setEnvironmentProtectionPrice] =
+    useState(0);
 
-            reader.readAsDataURL(file);
-        }
-    };
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
 
+  const [confirmation, setConfirmation] = useState(false);
 
-    const handlePayment = async () => {
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(`images/${selectedFile.name}`);
+  const handleCheckboxChange = (service) => {
+    setSelectedServices({
+      ...selectedServices,
+      [service]: !selectedServices[service],
+    });
+  };
 
-        try {
-            await fileRef.put(selectedFile);
-            console.log("อัปโหลดรูปภาพเสร็จสิ้น");
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
 
-            const imageUrl = await fileRef.getDownloadURL();
-            setImageUrl(imageUrl);
+    if (file) {
+      const reader = new FileReader();
 
-            const servicesRef = db.collection("Services").doc("Security").collection(userUID);
+      reader.onload = (e) => {
+        const imageSrc = e.target.result;
+        setImageUrl(imageSrc);
+      };
 
-            await servicesRef.add({
-                title: "Security", // เพิ่มข้อมูลหัวข้อบริการ
-                selectedServices,
-                totalAmount,
-                imageUrl,
-            });
+      reader.readAsDataURL(file);
+    }
+  };
 
-            console.log("บริการถูกเพิ่มลงใน Firestore");
-        } catch (error) {
-            console.error("เกิดข้อผิดพลาด: ", error);
-        }
-    };
+  const handlePayment = async () => {
+    if (selectedFile) {
+      const storageRef = firebase.storage().ref();
+      const fileRef = storageRef.child(`images/${selectedFile.name}`);
 
-    useEffect(() => {
-        if (selectedServices.foodDelivery) {
-            setFoodDeliveryPrice(20);
-        } else {
-            setFoodDeliveryPrice(0);
-        }
+      try {
+        await fileRef.put(selectedFile);
+        console.log("อัปโหลดรูปภาพเสร็จสิ้น");
 
-        if (selectedServices.environmentProtection) {
-            setEnvironmentProtectionPrice(0);
-        } else {
-            setEnvironmentProtectionPrice(0);
-        }
-    }, [selectedServices]);
+        const imageUrl = await fileRef.getDownloadURL();
+        setImageUrl(imageUrl);
 
-    const totalAmount =
-        (selectedServices.catchDangerousAnimals ? 20 : 0) +
-        (selectedServices.environmentProtection ? 0 : 0) +
-        (selectedServices.foodDelivery ? foodDeliveryPrice : 0);
+        const servicesRef = db
+          .collection("Services")
+          .doc("Security")
+          .collection(userUID);
 
-    return (
-        <>
-            <div className="container-blog">
-                <h1>บริการรักษาความปลอดภัย</h1>
-                <button className="top-right-button" onClick={handlePayment}>
-                    ชำระเงิน
-                </button>
-                <div class="sections-container">
-                    <section className="section1">
-                        <div className="security-header">
-                            <text className="security-text">หัวข้อการบริการ</text>
-                        </div>
-                        <label className="security-label">
-                            <input
-                                className="custom-checkbox"
-                                type="checkbox"
-                                checked={selectedServices.catchDangerousAnimals}
-                                onChange={() => handleCheckboxChange("catchDangerousAnimals")}
-                            />
-                            บริการจับสัตว์อันตราย (ราคา: 20 บาท)
-                        </label>
-                        <br />
-                        <label className="security-label">
-                            <input
-                                className="custom-checkbox"
-                                type="checkbox"
-                                checked={selectedServices.environmentProtection}
-                                onChange={() => handleCheckboxChange("environmentProtection")}
-                            />
-                            บริการรักษาสิ่งแวดล้อมบริเวณหอ (ฟรี)
-                        </label>
-                        <br />
-                        <label className="security-label">
-                            <input
-                                className="custom-checkbox"
-                                type="checkbox"
-                                checked={selectedServices.foodDelivery}
-                                onChange={() => handleCheckboxChange("foodDelivery")}
-                            />
-                            บริการนำอาหารและเครื่องไปส่งที่ห้อง (ราคา: {foodDeliveryPrice} บาท)
-                        </label>
-                        <div className="security-img">
-                            <div className="security-header">
-                                <text className="security-text">อัปโหลดรูปภาพ</text>
-                            </div>
-                            <input type="file" accept="image/*" onChange={handleFileChange} className="security-input"/>
-                            <img className="security-imageUrl" src={imageUrl || 'https://via.placeholder.com/150'} alt="Uploaded" />
-                        </div>
-                    </section>
-                    <div class="sections-main">
-                        <section className="section2">
-                            <div className="security-head">
-                                <text className="security-text">หัวข้อที่รับบริการ</text>
-                            </div>
-                            <ServiceDetails selectedServices={selectedServices} />
-                            <text className="total-price">ยอดรวม: {totalAmount} บาท</text>
-                        </section>
-                        <section className="section3">
-                            <div className="security-head">
-                                <text className="security-text">รายเอียดการบริการ</text>
-                            </div>
-                            <text className="left-align">เวลาให้บริการ : 08.00 - 20.00 น.</text><br />
-                            <text className="left-align">**ไม่พร้อมให้บริการในวันหยุด เสาร์ อาทิตย์ และวันหยุดนักขัตฤกษ **</text>
-                        </section>
-                    </div>
-                </div>
+        await servicesRef.add({
+          title: "Security",
+          selectedServices,
+          totalAmount,
+          imageUrl,
+        });
+
+        console.log("บริการถูกเพิ่มลงใน Firestore");
+        setConfirmation(true);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาด: ", error);
+      }
+    } else {
+      try {
+        const servicesRef = db
+          .collection("Services")
+          .doc("Security")
+          .collection(userUID);
+        await servicesRef.add({
+          title: "Security",
+          selectedServices,
+          totalAmount,
+          imageUrl: "",
+        });
+
+        console.log("บริการถูกเพิ่มลงใน Firestore");
+        setConfirmation(true);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาด: ", error);
+      }
+    }
+  };
+
+  const totalAmount =
+    (selectedServices.catchDangerousAnimals ? 20 : 0) +
+    (selectedServices.environmentProtection ? 0 : 0) +
+    (selectedServices.foodDelivery ? foodDeliveryPrice : 0);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  return (
+    <>
+      <div className="container-blog">
+        <h1>บริการรักษาความปลอดภย</h1>
+        <button className="top-right-button" onClick={handleOpenModal}>
+          ชำระเงิน
+        </button>
+        <div className="sections-container">
+          <section className="section1">
+            <div className="security-header">
+              <text className="security-text">หัวข้อการบริการ</text>
             </div>
-        </>
-    );
+            <label className="security-label">
+              <input
+                className="custom-checkbox"
+                type="checkbox"
+                checked={selectedServices.catchDangerousAnimals}
+                onChange={() => handleCheckboxChange("catchDangerousAnimals")}
+              />
+              บริการจับสัตว์อันตราย (ราคา: 20 บาท)
+            </label>
+            <br />
+            <label className="security-label">
+              <input
+                className="custom-checkbox"
+                type="checkbox"
+                checked={selectedServices.environmentProtection}
+                onChange={() => handleCheckboxChange("environmentProtection")}
+              />
+              บริการรักษาสิ่งแวดล้อมบริเวณหอ (ฟรี)
+            </label>
+            <br />
+            <label className="security-label">
+              <input
+                className="custom-checkbox"
+                type="checkbox"
+                checked={selectedServices.foodDelivery}
+                onChange={() => handleCheckboxChange("foodDelivery")}
+              />
+              บริการนำอาหารและเครื่องไปส่งที่ห้อง (ราคา: {foodDeliveryPrice}{" "}
+              บาท)
+            </label>
+            <div className="security-img">
+              <div className="security-header">
+                <text className="security-text">อัปโหลดรูปภาพ</text>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="security-input"
+              />
+              <img
+                className="security-imageUrl"
+                src={imageUrl || "https://via.placeholder.com/150"}
+                alt="Uploaded"
+              />
+            </div>
+          </section>
+          <div className="sections-main">
+            <section className="section2">
+              <div className="security-head">
+                <text className="security-text">หัวข้อที่รับบริการ</text>
+              </div>
+              <ServiceDetails selectedServices={selectedServices} />
+              <text className="total-price">ยอดรวม: {totalAmount} บาท</text>
+            </section>
+            <section className="section3">
+              <div className="security-head">
+                <text className="security-text">รายเอียดการบริการ</text>
+              </div>
+              <text className="left-align">
+                เวลาให้บริการ : 08.00 - 20.00 น.
+              </text>
+              <br />
+              <text className="left-align">
+                **ไม่พร้อมให้บริการในวันหยุด เสาร์ อาทิตย์ และวันหยุดนักขัตฤกษ
+                **
+              </text>
+            </section>
+          </div>
+        </div>
+      </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>รายละเอียดการบริการ</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ServiceDetails selectedServices={selectedServices} />
+          <p>ยอดรวม: {totalAmount} บาท</p>
+
+          {/* -- เผื่อใช้ --
+          <div className="mb-3">
+            <label htmlFor="slipFile" className="form-label">
+              Slip การโอน
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              id="slipFile"
+              accept="image/*"
+              onChange={handleSlipFileChange}
+            />
+          </div> */}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handlePayment}>
+            ยืนยัน
+          </Button>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      {confirmation && <div>รายการถูกยืนยันแล้ว</div>} {/* เพิ่มบรรทัดนี้ */}
+    </>
+  );
 };
 
 export default Service;
