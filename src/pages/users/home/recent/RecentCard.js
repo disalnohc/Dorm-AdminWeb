@@ -83,7 +83,6 @@ const RecentCard = () => {
                     <span style={{ background: category === "For Sale" ? "#25b5791a" : "#ff98001a", color: category === "For Sale" ? "#25b579" : "#ff9800" }}>
                       {data.roomStatus}
                     </span>
-
                   </div>
                   <h4>ห้องพัก {data.roomNumber} ชนิดห้อง {data.roomType}</h4>
                   <p>

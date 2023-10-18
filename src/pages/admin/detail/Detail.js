@@ -79,7 +79,6 @@ const Detail = () => {
             if (owner !== null) {
               const collRef = firestore.collection("profiles").doc(owner);
               const doc = await collRef.get();
-              
               if (doc.exists) {
                 const data = {
                   id: memberDataArray.length + 1,

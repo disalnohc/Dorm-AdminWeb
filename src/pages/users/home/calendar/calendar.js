@@ -11,24 +11,14 @@ const localizer = momentLocalizer(moment);
 
 const Calendars = () => {
   const [showEventModal, setShowEventModal] = useState(false);
-  const [showEmptyModal, setShowEmptyModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState('');
   const [event, setEvent] = useState([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-
 
 
   const handleEventModalOpen = event => {
     setSelectedEvent(event);
     setShowEventModal(true);
   };
-
-  const handleEmptyModalOpen = date => {
-    setSelectedEvent(date);
-    //alert(`Select Date : ${date.toLocaleDateString()}`);
-    setShowEmptyModal(true);
-  };
-
 
   const handleFetchData = () => {
     try {
@@ -70,7 +60,6 @@ const Calendars = () => {
             startAccessor="startTimeEvent"
             endAccessor="endTimeEvent"
             onSelectEvent={handleEventModalOpen}
-            onSelectSlot={({ start }) => handleEmptyModalOpen(start)}
             selectable={true}
             className='calender-main'
           />
