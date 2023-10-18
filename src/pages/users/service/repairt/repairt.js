@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./service.css";
 import ServiceDetails from "../ServiceDetails";
 import { Modal, Button } from "react-bootstrap";
@@ -10,6 +10,8 @@ import PaymentModal from "../PaymentModal";
 const Repairt = () => {
   const userUID = firebase.auth().currentUser.uid;
   const db = firebase.firestore();
+  const profilesRef = db.collection("profiles");
+  const roomsRef = db.collection("rooms");
 
   const [selectedServices, setSelectedServices] = useState({
     Repair: false,
@@ -18,13 +20,67 @@ const Repairt = () => {
     Order: false,
   });
 
-  const [cleanAirPrice, setCleanAirPrice] =
-    useState(0);
+  const [cleanAirPrice, setCleanAirPrice] = useState(0);
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
 
   const [confirmation, setConfirmation] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [roomNumber, setRoomNumber] = useState("");
+
+  const [hasMultipleRooms, setHasMultipleRooms] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState("");
+
+  const [userRooms, setUserRooms] = useState([]);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const profileDoc = await profilesRef.doc(userUID).get();
+        const profileData = profileDoc.data();
+        if (profileData) {
+          setUserName(profileData.name);
+          setUserPhone(profileData.phone);
+        }
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์: ", error);
+      }
+    };
+
+    const fetchRoomData = async () => {
+      try {
+        const roomsSnapshot = await db.collection("rooms").get();
+        const roomNumbers = roomsSnapshot.docs.map((doc) => doc.data().numroom);
+        const roomNumbersString = roomNumbers.join(", ");
+        setRoomNumber(roomNumbersString);
+
+        if (roomNumbers.length > 1) {
+          setHasMultipleRooms(true);
+        }
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลห้อง: ", error);
+      }
+    };
+
+    const fetchUserRooms = async () => {
+      try {
+        const userRoomsSnapshot = await db
+          .collection("rooms")
+          .where("owner", "==", userUID)
+          .get();
+        const userRoomsData = userRoomsSnapshot.docs.map((doc) => doc.data());
+        setUserRooms(userRoomsData);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลห้องของผู้ใช้: ", error);
+      }
+    };
+
+    fetchProfileData();
+    fetchRoomData();
+    fetchUserRooms();
+  }, [userUID, profilesRef, db]);
 
   const handleCheckboxChange = (service) => {
     setSelectedServices({
@@ -50,60 +106,66 @@ const Repairt = () => {
   };
 
   const handlePayment = async () => {
-    if (selectedFile) {
-      const storageRef = firebase.storage().ref();
-      const fileRef = storageRef.child(`images/${selectedFile.name}`);
+    const user = firebase.auth().currentUser;
 
-      try {
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
+
+    try {
+      const servicesRef = db
+        .collection("Services")
+        .doc("Repairt")
+        .collection(user.uid);
+
+      const serviceData = {
+        title: "Repairt",
+        selectedServices,
+        totalAmount: calculateTotalAmount(),
+        imageUrl: "",
+        name: userName,
+        phone: userPhone,
+        status: "ยังไม่เสร็จ",
+        numroom: hasMultipleRooms ? selectedRoom : roomNumber,
+      };
+
+      if (selectedFile) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(`images/${selectedFile.name}`);
+
         await fileRef.put(selectedFile);
         console.log("อัปโหลดรูปภาพเสร็จสิ้น");
 
         const imageUrl = await fileRef.getDownloadURL();
         setImageUrl(imageUrl);
 
-        const servicesRef = db
-          .collection("Services")
-          .doc("Repairt")
-          .collection(userUID);
-
-        await servicesRef.add({
-          title: "Repairt",
-          selectedServices,
-          totalAmount,
-          imageUrl,
-        });
-
-        console.log("บริการถูกเพิ่มลงใน Firestore");
-        setConfirmation(true);
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาด: ", error);
+        serviceData.imageUrl = imageUrl;
       }
-    } else {
-      try {
-        const servicesRef = db
-          .collection("Services")
-          .doc("Repairt")
-          .collection(userUID);
-        await servicesRef.add({
-          title: "Repairt",
-          selectedServices,
-          totalAmount,
-          imageUrl: "",
-        });
 
-        console.log("บริการถูกเพิ่มลงใน Firestore");
-        setConfirmation(true);
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาด: ", error);
-      }
+      await servicesRef.add(serviceData);
+
+      console.log("บริการถูกเพิ่มลงใน Firestore");
+      setConfirmation(true);
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด: ", error);
     }
   };
 
+  const calculateTotalAmount = () => {
+    return (
+      (selectedServices.Repair ? 20 : 0) +
+      (selectedServices.cleanAir ? 0 : 0) +
+      (selectedServices.Flush ? 0 : 0) +
+      (selectedServices.Order ? 0 : 0)
+    );
+  };
+
   const totalAmount =
-    (selectedServices.Repair ? 20 : 0) +
-    (selectedServices.cleanAir ? 0 : 0) +
-    (selectedServices.Flush ? 0 : 0) +
-    (selectedServices.Order ? 0 : 0) ;
+  (selectedServices.Repair ? 20 : 0) +
+  (selectedServices.cleanAir ? 0 : 0) +
+  (selectedServices.Flush ? 0 : 0) +
+  (selectedServices.Order ? 0 : 0);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -118,7 +180,7 @@ const Repairt = () => {
   return (
     <>
       <div className="container-blog">
-        <h1>บริการซ่อมแซม</h1>
+        <h1>บริการรักษาความปลอดภย</h1>
         <button className="top-right-button" onClick={handleOpenModal}>
           ชำระเงิน
         </button>
@@ -134,7 +196,7 @@ const Repairt = () => {
                 checked={selectedServices.Repair}
                 onChange={() => handleCheckboxChange("Repair")}
               />
-              ซ่อมลูกบิดประตู (ราคา: 20 บาท)
+              บริการจับสัตว์อันตราย (ราคา: 20 บาท)
             </label>
             <br />
             <label className="security-label">
@@ -144,7 +206,7 @@ const Repairt = () => {
                 checked={selectedServices.cleanAir}
                 onChange={() => handleCheckboxChange("cleanAir")}
               />
-              ล้างแอร์ (ฟรี)
+              บริการรักษาสิ่งแวดล้อมบริเวณหอ (ฟรี)
             </label>
             <br />
             <label className="security-label">
@@ -156,7 +218,6 @@ const Repairt = () => {
               />
               ล้างซิงค์ห้องน้ำ (ฟรี)
             </label>
-            <br />
             <label className="security-label">
               <input
                 className="custom-checkbox"
@@ -214,20 +275,22 @@ const Repairt = () => {
         <Modal.Body>
           <ServiceDetails selectedServices={selectedServices} />
           <p>ยอดรวม: {totalAmount} บาท</p>
-
-          {/* -- เผื่อใช้ --
-          <div className="mb-3">
-            <label htmlFor="slipFile" className="form-label">
-              Slip การโอน
-            </label>
-            <input
-              type="file"
-              className="form-control"
-              id="slipFile"
-              accept="image/*"
-              onChange={handleSlipFileChange}
-            />
-          </div> */}
+          {hasMultipleRooms && (
+            <div>
+              <label htmlFor="roomSelect">เลือกห้อง:</label>
+              <select
+                id="roomSelect"
+                onChange={(e) => setSelectedRoom(e.target.value)}
+                value={selectedRoom}
+              >
+                {userRooms.map((room) => (
+                  <option key={room.numroom} value={room.numroom}>
+                    Room {room.numroom}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handlePayment}>
@@ -237,8 +300,9 @@ const Repairt = () => {
             ยกเลิก
           </Button>
         </Modal.Footer>
+        {confirmation && <div>รายการถูกยืนยันแล้ว</div>}
       </Modal>
-      {confirmation && <div>รายการถูกยืนยันแล้ว</div>} {/* เพิ่มบรรทัดนี้ */}
+      
     </>
   );
 };

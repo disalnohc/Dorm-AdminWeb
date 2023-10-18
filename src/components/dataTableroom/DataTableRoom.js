@@ -113,7 +113,7 @@ const DataTableRoom = (props) => {
     }
   
     const NewRoomData = {
-      title: roomNumber,  // Include title (room number) in NewRoomData
+      numroom: roomNumber,  // Include title (room number) in NewRoomData
       owner: null,
       electric: "0",
       electricCurrent: "0",

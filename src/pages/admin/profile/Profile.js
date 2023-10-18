@@ -31,8 +31,8 @@ const Profile = () => {
                 firestore.collection('rooms').where('owner', '==', user).get().then((querySnapshot) => {
                     const roomsData = [];
                     querySnapshot.forEach((doc) => {
-                        const { title, status, type } = doc.data();
-                        roomsData.push({ title, status, type });
+                        const { numroom, status, type } = doc.data();
+                        roomsData.push({ numroom, status, type });
                     });
                     setRoomsData(roomsData);
                 }).catch((error) => {
@@ -44,6 +44,19 @@ const Profile = () => {
         }).catch((error) => {
             console.log('error fetching user profile data: ', error)
         });
+
+        if (auth.currentUser && auth.currentUser.uid === user) {
+          firestore.collection('rooms').where('owner', '==', user).get().then((querySnapshot) => {
+              const roomsData = [];
+              querySnapshot.forEach((doc) => {
+                  const { numroom, status, type } = doc.data();
+                  roomsData.push({ numroom, status, type });
+              });
+              setRoomsData(roomsData);
+          }).catch((error) => {
+              console.log('error fetching room data: ', error)
+          });
+      }
     } catch (error) {
         console.log('error fetching data: ', error)
     }
@@ -129,7 +142,7 @@ const Profile = () => {
 
             {roomsData.map((room, index) => (
                 <li key={index}>
-                  <p className="profile-info">Title: {room.title}</p>
+                  <p className="profile-info">Room: {room.numroom}</p>
                   <p className="profile-info">Status: {room.status}</p>
                   <p className="profile-info">Type: {room.type}</p>
                 </li>

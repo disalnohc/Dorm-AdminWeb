@@ -1,41 +1,43 @@
-import React, { useState } from "react";
-import { Modal, Button } from 'react-bootstrap'; 
-import ServiceDetails from "./ServiceDetails";
-const PaymentModal = ({ selectedServices, totalAmount, handlePayment }) => {
-  const [show, setShow] = useState(false);
+import React from "react";
+import { Modal, Button } from "react-bootstrap";
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const handleConfirm = async () => {
-    handlePayment();
-    handleClose();
-  };
-
+const PaymentModal = ({
+  show,
+  onHide,
+  selectedServices,
+  totalAmount,
+  userName,
+  userPhone,
+  roomNumber,
+}) => {
   return (
-    <>
-      <Button variant="primary" onClick={handleShow}>
-        ชำระเงิน
-      </Button>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>รายละเอียดการบริการ</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ServiceDetails selectedServices={selectedServices} />
-          <p>ยอดรวม: {totalAmount} บาท</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            ยกเลิก
-          </Button>
-          <Button variant="primary" onClick={handleConfirm}>
-            ยืนยัน
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+    <Modal show={show} onHide={onHide}>
+      <Modal.Header closeButton>
+        <Modal.Title>รายละเอียดการบริการ</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div>
+          <p>รายการบริการที่เลือก:</p>
+          <ul>
+            {Object.entries(selectedServices).map(([service, selected]) => (
+              selected && <li key={service}>{service}</li>
+            ))}
+          </ul>
+        </div>
+        <p>ยอดรวม: {totalAmount} บาท</p>
+        <p>ชื่อผู้ใช้: {userName}</p>
+        <p>เบอร์โทร: {userPhone}</p>
+        <p>หมายเลขห้อง: {roomNumber}</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="primary" onClick={onHide}>
+          ยืนยัน
+        </Button>
+        <Button variant="secondary" onClick={onHide}>
+          ยกเลิก
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
