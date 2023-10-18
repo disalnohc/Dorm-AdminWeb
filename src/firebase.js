@@ -18,7 +18,6 @@ const db = firebase.initializeApp(firebaseConfig);
 export const auth = db.auth();
 export const firestore = db.firestore();
 export const storageRef = db.storage();
-export const storage = db.storage(); // เพิ่มบรรทัดนี้
-
+export const storage = db.storage(); 
 
 export default db;

@@ -105,7 +105,15 @@ const DataTableRoom = (props) => {
   };
 
   const handleAddRoom = async () => {
+    const roomNumber = document.getElementById("title").value;
+  
+    if (!roomNumber) {
+      console.error("Room number is required.");
+      return;
+    }
+  
     const NewRoomData = {
+      numroom: roomNumber,  // Include title (room number) in NewRoomData
       owner: null,
       electric: "0",
       electricCurrent: "0",
@@ -117,15 +125,15 @@ const DataTableRoom = (props) => {
       type: document.getElementById("TypeRooms").value,
       status: document.getElementById("Status").value,
     }
+  
     try {
-      const RoomID = document.getElementById("title").value;
-      await firestore.collection('rooms').doc(RoomID).set(NewRoomData);
-      console.log('add new room success');
+      await firestore.collection('rooms').doc(roomNumber).set(NewRoomData);
+      console.log(`Room ${roomNumber} added successfully.`);
       setShowModal(false);
       fetchDataRoom();
       setTimeout(() => {
         setSmallModalTitle('Add Success');
-        setSmallModalDetail(`Add Room Number : ${roomId} Success`);
+        setSmallModalDetail(`Add Room Number : ${roomNumber} Success`);
         setShowSmallModal(true);
       }, 1000);
       setTimeout(() => {
@@ -134,7 +142,7 @@ const DataTableRoom = (props) => {
     } catch (error) {
       console.log("error add new room : ", error);
     }
-  };
+  };  
 
   const handleClose = () => {
     setShowModal(false);

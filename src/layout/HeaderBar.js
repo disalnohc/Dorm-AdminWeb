@@ -53,7 +53,7 @@ const HeaderBar = ({ setIsAuthenticated , setIsAdmin }) => {
             <Link to="/admin/profile" className="menu-bars">
               <MenuItem onClick={handleClose}>Profile</MenuItem>
             </Link>
-            <Link to="#" className="menu-bars">
+            <Link to="/admin/chat" className="menu-bars">
               <MenuItem onClick={handleClose}>Chat</MenuItem>
             </Link>
             <Link to="#" className="menu-bars">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./security.css";
+import "./service.css";
 import ServiceDetails from "../ServiceDetails";
 import { Modal, Button } from "react-bootstrap";
 import firebase from "firebase/compat/app";
@@ -11,6 +11,7 @@ const Service = () => {
   const userUID = firebase.auth().currentUser.uid;
   const db = firebase.firestore();
   const profilesRef = db.collection("profiles");
+  const roomsRef = db.collection("rooms");
 
   const [selectedServices, setSelectedServices] = useState({
     catchDangerousAnimals: false,
@@ -27,6 +28,13 @@ const Service = () => {
 
   const [confirmation, setConfirmation] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [roomNumber, setRoomNumber] = useState("");
+
+  const [hasMultipleRooms, setHasMultipleRooms] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState("");
+
+  const [userRooms, setUserRooms] = useState([]);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -35,14 +43,45 @@ const Service = () => {
         const profileData = profileDoc.data();
         if (profileData) {
           setUserName(profileData.name);
+          setUserPhone(profileData.phone);
         }
       } catch (error) {
         console.error("เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์: ", error);
       }
     };
 
+    const fetchRoomData = async () => {
+      try {
+        const roomsSnapshot = await db.collection("rooms").get();
+        const roomNumbers = roomsSnapshot.docs.map((doc) => doc.data().numroom);
+        const roomNumbersString = roomNumbers.join(", ");
+        setRoomNumber(roomNumbersString);
+
+        if (roomNumbers.length > 1) {
+          setHasMultipleRooms(true);
+        }
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลห้อง: ", error);
+      }
+    };
+
+    const fetchUserRooms = async () => {
+      try {
+        const userRoomsSnapshot = await db
+          .collection("rooms")
+          .where("owner", "==", userUID)
+          .get();
+        const userRoomsData = userRoomsSnapshot.docs.map((doc) => doc.data());
+        setUserRooms(userRoomsData);
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลห้องของผู้ใช้: ", error);
+      }
+    };
+
     fetchProfileData();
-  }, [userUID, profilesRef]);
+    fetchRoomData();
+    fetchUserRooms();
+  }, [userUID, profilesRef, db]);
 
   const handleCheckboxChange = (service) => {
     setSelectedServices({
@@ -84,9 +123,12 @@ const Service = () => {
       const serviceData = {
         title: "Security",
         selectedServices,
-        totalAmount: calculateTotalAmount(), // Make sure totalAmount is properly defined
+        totalAmount: calculateTotalAmount(),
         imageUrl: "",
-        name: userName, // Make sure userName is properly set
+        name: userName,
+        phone: userPhone,
+        status: "ยังไม่เสร็จ",
+        numroom: hasMultipleRooms ? selectedRoom : roomNumber,
       };
 
       if (selectedFile) {
@@ -117,7 +159,7 @@ const Service = () => {
       (selectedServices.environmentProtection ? 0 : 0) +
       (selectedServices.foodDelivery ? foodDeliveryPrice : 0)
     );
-  };  
+  };
 
   const totalAmount =
     (selectedServices.catchDangerousAnimals ? 20 : 0) +
@@ -224,20 +266,22 @@ const Service = () => {
         <Modal.Body>
           <ServiceDetails selectedServices={selectedServices} />
           <p>ยอดรวม: {totalAmount} บาท</p>
-
-          {/* -- เผื่อใช้ --
-          <div className="mb-3">
-            <label htmlFor="slipFile" className="form-label">
-              Slip การโอน
-            </label>
-            <input
-              type="file"
-              className="form-control"
-              id="slipFile"
-              accept="image/*"
-              onChange={handleSlipFileChange}
-            />
-          </div> */}
+          {hasMultipleRooms && (
+            <div>
+              <label htmlFor="roomSelect">เลือกห้อง:</label>
+              <select
+                id="roomSelect"
+                onChange={(e) => setSelectedRoom(e.target.value)}
+                value={selectedRoom}
+              >
+                {userRooms.map((room) => (
+                  <option key={room.numroom} value={room.numroom}>
+                    Room {room.numroom}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handlePayment}>
@@ -247,8 +291,9 @@ const Service = () => {
             ยกเลิก
           </Button>
         </Modal.Footer>
+        {confirmation && <div>รายการถูกยืนยันแล้ว</div>}
       </Modal>
-      {confirmation && <div>รายการถูกยืนยันแล้ว</div>} {/* เพิ่มบรรทัดนี้ */}
+      
     </>
   );
 };

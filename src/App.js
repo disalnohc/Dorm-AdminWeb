@@ -37,7 +37,7 @@ import Service from './pages/users/service/Service';
 import RoomDetail from './pages/users/booking/RoomDetail/RoomDetail';
 import CostPage from './pages/users/cost/CostPage';
 import ServiceUser from './pages/users/service/security/security';
-import Housewife from './pages/users/service/housewife/housewife';
+import HousewifeUser from './pages/users/service/housewife/housewife';
 import RepairUser from './pages/users/service/repairt/repairt';
 
 import { auth } from './firebase';
@@ -168,7 +168,7 @@ const App = () => {
                   <Route path="/user/cost" element={<CostPage />} /> 
                   <Route path='/user/profile' element={<Profile />} />
                   <Route path="/user/security" element={<ServiceUser />} />
-                  <Route path="/user/housewife" element={<Housewife />} />
+                  <Route path="/user/housewife" element={<HousewifeUser />} />
                   <Route path="/user/repairt" element={<RepairUser />} />
                 </>
               </Routes>
