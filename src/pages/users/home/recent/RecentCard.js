@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { firestore } from "../../../../firebase";
 import { Link } from "react-router-dom";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { Dna } from 'react-loader-spinner'
 
 const RecentCard = () => {
@@ -84,7 +83,6 @@ const RecentCard = () => {
                     <span style={{ background: category === "For Sale" ? "#25b5791a" : "#ff98001a", color: category === "For Sale" ? "#25b579" : "#ff9800" }}>
                       {data.roomStatus}
                     </span>
-                    <FontAwesomeIcon icon={faHeart} />
                   </div>
                   <h4>ห้องพัก {data.roomNumber} ชนิดห้อง {data.roomType}</h4>
                   <p>

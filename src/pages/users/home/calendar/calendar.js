@@ -5,28 +5,19 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import './calendar.css';
 import { firestore } from '../../../../firebase';
+import Modal from 'react-bootstrap/Modal';
 
 const localizer = momentLocalizer(moment);
 
 const Calendars = () => {
   const [showEventModal, setShowEventModal] = useState(false);
-  const [showEmptyModal, setShowEmptyModal] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState('');
   const [event, setEvent] = useState([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-
 
   const handleEventModalOpen = event => {
     setSelectedEvent(event);
     setShowEventModal(true);
   };
-
-  const handleEmptyModalOpen = date => {
-    setSelectedEvent(date);
-    //alert(`Select Date : ${date.toLocaleDateString()}`);
-    setShowEmptyModal(true);
-  };
-
 
   const handleFetchData = () => {
     try {
@@ -52,6 +43,10 @@ const Calendars = () => {
     handleFetchData();
   }, []);
 
+  const handleModalClose = () => {
+    setShowEventModal(false);
+  }
+
 
   return (
     <>
@@ -65,12 +60,27 @@ const Calendars = () => {
               startAccessor="startTimeEvent"
               endAccessor="endTimeEvent"
               onSelectEvent={handleEventModalOpen}
-              onSelectSlot={({ start }) => handleEmptyModalOpen(start)}
               selectable={true}
               className='calender-main'
             />
            </div>
       </section>
+      <Modal show={showEventModal} onHide={handleModalClose}
+              aria-labelledby="contained-modal-title-vcenter"
+              centered>
+              <Modal.Header closeButton><h2>กิจกรรม</h2></Modal.Header>
+              <Modal.Body>
+                  <h5>หัวข้อ : {selectedEvent.title}</h5>
+                  <h5>รายละเอียด : {selectedEvent.text}</h5>
+                  <h5>เริ่มวันที่ : {moment(selectedEvent.startTimeEvent).format(' DD/MM/YYYY เวลา HH:mm น.')}</h5>
+                  <h5>จบวันที่ : {moment(selectedEvent.endTimeEvent).format(' DD/MM/YYYY เวลา HH:mm น.')}</h5>
+              </Modal.Body>
+              <Modal.Footer>
+                  <button variant="danger" onClick={handleModalClose} className="delete-button" >
+                    Close
+                  </button>
+              </Modal.Footer>
+            </Modal>
     </>
   );
 };
