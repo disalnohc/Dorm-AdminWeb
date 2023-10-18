@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./service.css";
 import ServiceDetails from "../ServiceDetails";
 import { Modal, Button } from "react-bootstrap";
@@ -10,45 +10,7 @@ import PaymentModal from "../PaymentModal";
 const Service = () => {
   const userUID = firebase.auth().currentUser.uid;
   const db = firebase.firestore();
-  /*
-  -- เผื่อใช้ --
-  const [slipFile, setSlipFile] = useState(null);
-
-  const handleSlipFileChange = async (event) => {
-    const file = event.target.files[0];
-    setSlipFile(file);
-
-    if (file) {
-      const storageRef = firebase.storage().ref();
-      const fileRef = storageRef.child(`slips/${file.name}`);
-
-      try {
-        await fileRef.put(file);
-        console.log("อัปโหลด Slip การโอนเงินเสร็จสิ้น");
-
-        const slipUrl = await fileRef.getDownloadURL();
-
-        const servicesRef = db
-          .collection("Services")
-          .doc("Security")
-          .collection(userUID);
-
-        await servicesRef.add({
-          title: "Security",
-          selectedServices,
-          totalAmount,
-          imageUrl,
-          SlipService: slipUrl, // เพิ่ม SlipService ลงใน Firestore
-        });
-
-        console.log("บริการถูกเพิ่มลงใน Firestore");
-        setConfirmation(true);
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาด: ", error);
-      }
-    }
-  };
-  */
+  const profilesRef = db.collection("profiles");
 
   const [selectedServices, setSelectedServices] = useState({
     catchDangerousAnimals: false,
@@ -64,6 +26,23 @@ const Service = () => {
   const [imageUrl, setImageUrl] = useState("");
 
   const [confirmation, setConfirmation] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const profileDoc = await profilesRef.doc(userUID).get();
+        const profileData = profileDoc.data();
+        if (profileData) {
+          setUserName(profileData.name);
+        }
+      } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการดึงข้อมูลโปรไฟล์: ", error);
+      }
+    };
+
+    fetchProfileData();
+  }, [userUID, profilesRef]);
 
   const handleCheckboxChange = (service) => {
     setSelectedServices({
@@ -89,54 +68,56 @@ const Service = () => {
   };
 
   const handlePayment = async () => {
-    if (selectedFile) {
-      const storageRef = firebase.storage().ref();
-      const fileRef = storageRef.child(`images/${selectedFile.name}`);
+    const user = firebase.auth().currentUser;
 
-      try {
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
+
+    try {
+      const servicesRef = db
+        .collection("Services")
+        .doc("Security")
+        .collection(user.uid);
+
+      const serviceData = {
+        title: "Security",
+        selectedServices,
+        totalAmount: calculateTotalAmount(), // Make sure totalAmount is properly defined
+        imageUrl: "",
+        name: userName, // Make sure userName is properly set
+      };
+
+      if (selectedFile) {
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(`images/${selectedFile.name}`);
+
         await fileRef.put(selectedFile);
         console.log("อัปโหลดรูปภาพเสร็จสิ้น");
 
         const imageUrl = await fileRef.getDownloadURL();
         setImageUrl(imageUrl);
 
-        const servicesRef = db
-          .collection("Services")
-          .doc("Security")
-          .collection(userUID);
-
-        await servicesRef.add({
-          title: "Security",
-          selectedServices,
-          totalAmount,
-          imageUrl,
-        });
-
-        console.log("บริการถูกเพิ่มลงใน Firestore");
-        setConfirmation(true);
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาด: ", error);
+        serviceData.imageUrl = imageUrl;
       }
-    } else {
-      try {
-        const servicesRef = db
-          .collection("Services")
-          .doc("Security")
-          .collection(userUID);
-        await servicesRef.add({
-          title: "Security",
-          selectedServices,
-          totalAmount,
-          imageUrl: "",
-        });
 
-        console.log("บริการถูกเพิ่มลงใน Firestore");
-        setConfirmation(true);
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาด: ", error);
-      }
+      await servicesRef.add(serviceData);
+
+      console.log("บริการถูกเพิ่มลงใน Firestore");
+      setConfirmation(true);
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด: ", error);
     }
   };
+
+  const calculateTotalAmount = () => {
+    return (
+      (selectedServices.catchDangerousAnimals ? 20 : 0) +
+      (selectedServices.environmentProtection ? 0 : 0) +
+      (selectedServices.foodDelivery ? foodDeliveryPrice : 0)
+    );
+  };  
 
   const totalAmount =
     (selectedServices.catchDangerousAnimals ? 20 : 0) +
