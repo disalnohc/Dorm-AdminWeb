@@ -8,19 +8,19 @@ const columns = [
     field: "roomNumber",
     type: "string",
     headerName: "เลขห้อง",
-    width: 400,
+    width: 300,
   },
   {
     field: "status",
     type: "string",
     headerName: "สถานะ",
-    width: 400,
+    width: 300,
   },
   {
     field: "typeRoom",
     type: "string",
     headerName: "ชนิดห้องพัก",
-    width: 400,
+    width: 300,
   },
 ];
 

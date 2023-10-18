@@ -4,7 +4,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import './calendar.css';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { firestore } from '../../../firebase';
 
 const localizer = momentLocalizer(moment);
@@ -18,15 +18,15 @@ const Calender = () => {
 
   const handleSaveEvent = async () => {
 
-    const startTime = document.querySelector("#title").value;
-    const endTime = document.querySelector("#text").value;
+    const startTime = document.querySelector("#starttime").value;
+    const endTime = document.querySelector("#endtime").value;
 
     try {
       const newEvent = {
         startTimeEvent: document.querySelector("#starttime").value,
         endTimeEvent: document.querySelector("#endtime").value,
-        title: startTime,
-        text: endTime
+        title: document.querySelector("#title").value,
+        text: document.querySelector("#text").value
       }
 
       if(startTime>=endTime){

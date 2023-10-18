@@ -44,6 +44,18 @@ const columns = [
     type: "string",
     width: 220,
   },
+  {
+    field: "dateIn",
+    headerName : "วันเข้าหอพัก",
+    type : 'String',
+    width : 220,
+  },
+  {
+    field: "dateOut",
+    headerName : "วันออกหอพัก",
+    type : 'String',
+    width : 220,
+  }
 ];
 
 const Detail = () => {
@@ -61,6 +73,8 @@ const Detail = () => {
           querySnapshot.docs.map(async (docSnapshot) => {
             const room = docSnapshot.id;
             const owner = docSnapshot.data().owner;
+            const DateIn = docSnapshot.data().datein;
+            const DateOut = docSnapshot.data().dateout;
   
             if (owner !== null) {
               const collRef = firestore.collection("profiles").doc(owner);
@@ -74,6 +88,8 @@ const Detail = () => {
                   name: doc.data().name,
                   email: doc.data().email,
                   phoneNumber: doc.data().phone,
+                  dateIn : DateIn,
+                  dateOut : DateOut,
                 };
 
                 memberDataArray.push(data);

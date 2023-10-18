@@ -1,8 +1,8 @@
 import React from "react";
-import "./service.css";
+import "./ServiceDetails.css";
 const ServiceDetails = ({ selectedServices }) => {
   return (
-    <div> {/* เพิ่ม className "left-align" */}
+    <div>
       {selectedServices.catchDangerousAnimals && (
         <div>
           <text className="left-align">บริการจับสัตว์อันตราย</text>
@@ -46,6 +46,11 @@ const ServiceDetails = ({ selectedServices }) => {
       {selectedServices.Flush && (
         <div>
           <text className="left-align">ล้างซิงค์ห้องน้ำ</text>
+        </div>
+      )}
+      {selectedServices.Order && (
+        <div>
+          <text className="left-align">อื่นๆ</text>
         </div>
       )}
     </div>

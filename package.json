@@ -27,6 +27,7 @@
     "firebase": "^10.3.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
+    "mdb-react-ui-kit": "^6.3.0",
     "moment": "^2.29.4",
     "pdfmake": "^0.2.7",
     "pspdfkit": "^2023.4.5",

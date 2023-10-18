@@ -26,7 +26,7 @@ import Profile from './pages/admin/profile/Profile'
 
 //user
 import Header from './pages/users/common/header/Header';
-//import Foonter from './pages/users/common/footer/Footer';
+import Foonter from './pages/users/common/footer/Footer';
 import HomePage from './pages/users/home/Home';
 import About from './pages/users/about/About';
 import Blog from './pages/users/blog/Blog';
@@ -173,8 +173,10 @@ const App = () => {
                 </>
               </Routes>
             </Box>
+            <Foonter />
           </div>
         </main>
+        
       </>
     );
   }
