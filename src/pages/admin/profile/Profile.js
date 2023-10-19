@@ -94,6 +94,7 @@ const Profile = () => {
       });
       setIsEditing(false);
       alert("บันทึกข้อมูลสำเร็จ");
+      setData({ ...data, name: newName });
     } catch (error) {
       console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล: ", error);
     }
