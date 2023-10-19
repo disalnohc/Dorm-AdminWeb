@@ -67,11 +67,19 @@ const Profile = () => {
       const ImgRef = await storage.ref().child(`profiles_image/${user}.jpg`);
       ImgRef.put(ImageInput).then((url) => {
         alert("Upload Success");
+        shownewAvatar();
       });
     } catch (error) {
       console.log("error upload images profile : ", error);
     }
   };
+
+  function shownewAvatar() {
+    storage.ref().child(`profiles_image/${user}.jpg`).getDownloadURL().then((url) => {
+      setProfile(url);
+  });
+  }
+
 
   const handleFileInputChange = (e) => {
     if (e.target.files[0]) {

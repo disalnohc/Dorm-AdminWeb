@@ -13,7 +13,7 @@ const columns = [
     renderCell: (params) => {
       return (
         <img
-          src={params.row.img ? `https://firebasestorage.googleapis.com/v0/b/hopak-8af20.appspot.com/o/profiles_image%2F${params.row.img}.jpg?alt=media` : "https://img.freepik.com/premium-vector/business-global-economy_24877-41082.jpg"}
+          src={`https://firebasestorage.googleapis.com/v0/b/hopak2-7320e.appspot.com/o/profiles_image%2F${params.row.img}.jpg?alt=media`}
           alt="profiileAvatar"
           style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         />
