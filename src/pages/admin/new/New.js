@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './new.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { firestore, storageRef } from '../../../firebase';
+import { firestore, storage } from '../../../firebase';
 
 const fetchNewsFromFirestore = async () => {
   try {
@@ -55,7 +54,7 @@ const deleteNewsFromFirestore = async (id) => {
 
 const uploadImageToStorage = async (file) => {
   try {
-    const storageRef = storageRef.ref();
+    const storageRef = storage.ref();
     const fileRef = storageRef.child(`news_image/${file.name}`);
     await fileRef.put(file);
     return await fileRef.getDownloadURL();
@@ -141,7 +140,7 @@ function News() {
     } catch (error) {
       console.error("Error updating news: ", error);
     }
-  };  
+  };
 
   const handleDeleteNews = async (id) => {
     try {
@@ -179,11 +178,12 @@ function News() {
   };
 
   return (
-    <div className="app">
+    <div>
       <div className="main-content">
-        <div className="info">
-          <h1>บอร์ดข่าวสาร</h1>
+        <div className="header-content">
+          <h2>บอร์ดข่าวสาร</h2>
         </div>
+
         <div className="row">
           {newsPage.map((news, index) => (
             <div key={index} className="col-md-6 mb-4">
@@ -218,7 +218,7 @@ function News() {
         </div>
         <div className="pagination">
           <button
-            className="btn btn-primary"
+            className="previous-botton"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
@@ -227,25 +227,24 @@ function News() {
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index}
-              className={`btn btn-primary ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
+              className={`number-button ${currentPage === index + 1 ? "active" : ""
+                }`}
               onClick={() => handlePageChange(index + 1)}
             >
               {index + 1}
             </button>
           ))}
           <button
-            className="btn btn-primary"
+            className="next-button"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             Next
           </button>
         </div>
-
-        <div className="add-button">
-          <button className="btn btn-primary" onClick={handleShow}>
+        
+        <div className="add-main">
+          <button className="add-button" onClick={handleShow}>
             Add News
           </button>
         </div>
@@ -304,19 +303,20 @@ function News() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <button variant="secondary" onClick={handleClose} className='close-button'>
             Close
-          </Button>
-          <Button
+          </button>
+          <button
             variant="primary"
             onClick={
               editing
                 ? () => handleEditNews(newNews.id, newNews)
                 : handleAddNews
             }
+            className='add-new-button'
           >
             {editing ? "Save Changes" : "Add News"}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

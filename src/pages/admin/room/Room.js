@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./room.css";
-import DataTableAC from "../../../components/dataTableAC/DataTableAC"; 
+import DataTableRoom from "../../../components/dataTableroom/DataTableRoom"; 
 import { firestore } from "../../../firebase";
 
 const columns = [
@@ -9,18 +8,23 @@ const columns = [
     field: "roomNumber",
     type: "string",
     headerName: "เลขห้อง",
-    width: 400,
+    width: 300,
   },
   {
     field: "status",
     type: "string",
     headerName: "สถานะ",
-    width: 400,
+    width: 300,
+  },
+  {
+    field: "typeRoom",
+    type: "string",
+    headerName: "ชนิดห้องพัก",
+    width: 300,
   },
 ];
 
 const Room = () => {
-  //const [open, setOpen] = useState(false);
   const [roomData, setRoomData] = useState([]); 
 
   useEffect(() => {
@@ -36,6 +40,7 @@ const Room = () => {
         id: index + 1, 
         roomNumber: doc.id,
         status: doc.data().status,
+        typeRoom: doc.data().type
       }));
       setRoomData(data);
     } catch (error) {
@@ -45,13 +50,11 @@ const Room = () => {
 
   return (
     <div>
-      <div className="info">
-        <h1>ผังห้องพัก</h1>
+      <div className="header-content">
+        <h2>ผังห้องพัก</h2>
       </div>
-      <DataTableAC slug="room" columns={columns} rows={roomData} fetchDataRoom={fetchDataRoom} />
+      <DataTableRoom slug="room" columns={columns} rows={roomData} fetchDataRoom={fetchDataRoom} />
     </div>
-
-    
   );
 };
 

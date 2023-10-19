@@ -12,13 +12,13 @@ export default function LoginForm({ onLogin }) {
     }
   };
   const containerClass =
-    "container-2 " + (type === "signUp" ? "right-panel-active-2" : "");
+    "container-login " + (type === "signUp" ? "right-panel-active-2" : "");
   return (
-    <div className="App">
-      <div className={containerClass} id="container-2">
+    <div className="login">
+      <div className={containerClass} id="container-login">
         <SignUpForm />
         <SignInForm onLogin={onLogin} />
-        <div className="overlay-container-2">
+        <div className="overlay-login">
           <div className="overlay-2">
             <div className="overlay-panel-2 overlay-left-2">
               <h3 style={{color:"#000"}}>Welcome Back!</h3>
@@ -37,7 +37,7 @@ export default function LoginForm({ onLogin }) {
               <h3 style={{color:"#000"}}>Hello, Friend!</h3>
               <p>Enter your personal details and start journey with us</p>
               <button
-                className="ghost "
+                className="ghost"
                 id="signUp"
                 onClick={() => handleOnClick("signUp")}
               >

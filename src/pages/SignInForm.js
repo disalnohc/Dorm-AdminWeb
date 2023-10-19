@@ -1,48 +1,43 @@
-import React, { useState } from "react";
-import "./UI.css";
-const SignInForm = ({ onLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+import React, { useState } from 'react';
+import { auth } from '../firebase';
 
-  const handleLogin = () => {
-    if (username === "admin" && password === "1234") {
-      onLogin();
-    } else {
-      alert("Invalid username or password");
+const SignInForm = ({ onLogin }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    try {
+      if(auth.signInWithEmailAndPassword(username, password)){
+        onLogin();
+      }
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("เข้าสู่ระบบไม่สำเร็จ: ", errorCode, errorMessage);
     }
-  };
+  }
 
   return (
     <div className="form-container-2 sign-in-container-2">
-      <form>
+      <form className='form'>
         <h1>Sign in</h1>
         <input
-          className="input"
+          className="login-input"
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
-          className="input"
+          className="login-input"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <div className="LabelBox">
-          <label>
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            Remember Me
-            <a className="forgot" href="/forgot-password">Forgot your password?</a>
-          </label>
-        </div>
-        <button className="button" onClick={handleLogin}>Sign In</button>
+        <a href="/forgot-password">Forgot your password?</a>
+        <button onClick={handleLogin} className='btn-login'>Sign In</button>
       </form>
     </div>
   );
