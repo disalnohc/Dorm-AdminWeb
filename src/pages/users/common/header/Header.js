@@ -28,17 +28,14 @@ const Header = ({ setIsAuthenticated, setIsAdmin }) => {
   };
 
   const handleLogoutClick = async () => {
-    auth
-      .signOut()
-      .then(() => {
-        alert("Sign Out");
-        setIsAuthenticated(false);
-        setIsAdmin(false);
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log("error sign out: ", error);
-      });
+    auth.signOut().then(() => {
+      alert('Sign Out');
+      setIsAuthenticated(false);
+      setIsAdmin(false);
+      navigate('/');
+    }).catch((error) => {
+      console.log('error sign out : ',error);
+    });
   };
 
   // adding the states 

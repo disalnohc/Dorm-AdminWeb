@@ -180,7 +180,7 @@ const Repairt = () => {
   return (
     <>
       <div className="container-blog">
-        <h1>บริการรักษาความปลอดภย</h1>
+        <h1>บริการซ่อมบำรุง</h1>
         <button className="top-right-button" onClick={handleOpenModal}>
           ชำระเงิน
         </button>
@@ -218,6 +218,7 @@ const Repairt = () => {
               />
               ล้างซิงค์ห้องน้ำ (ฟรี)
             </label>
+            <br />
             <label className="security-label">
               <input
                 className="custom-checkbox"

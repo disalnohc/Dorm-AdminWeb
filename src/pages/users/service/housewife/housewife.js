@@ -178,7 +178,7 @@ const Housewife = () => {
   return (
     <>
       <div className="container-blog">
-        <h1>บริการรักษาความปลอดภย</h1>
+        <h1>บริการทําความสะอาด</h1>
         <button className="top-right-button" onClick={handleOpenModal}>
           ชำระเงิน
         </button>

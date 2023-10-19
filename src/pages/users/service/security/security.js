@@ -179,7 +179,7 @@ const Service = () => {
   return (
     <>
       <div className="container-blog">
-        <h1>บริการรักษาความปลอดภย</h1>
+        <h1>บริการรักษาความปลอดภัย</h1>
         <button className="top-right-button" onClick={handleOpenModal}>
           ชำระเงิน
         </button>
